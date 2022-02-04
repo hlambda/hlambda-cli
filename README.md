@@ -19,10 +19,37 @@ $ yarn add hlambda-cli
 ## Example
 
 ````shell
-$ hlambda metadata apply
-````
-
-````shell
 $ hlambda version
 $ hlambda --version
 ````
+
+````shell
+$ hlambda init my-first-hlambda-app
+````
+
+````shell
+$ cd my-first-hlambda-app
+````
+Change the admin_secret in the config.yaml and just run 
+
+````shell
+$ hlambda metadata apply
+````
+
+or run the hlambda console with option --admin-secret <your_secret>
+
+````shell
+$ hlambda metadata apply --admin-secret <your_secret>
+````
+
+to export existing data from the hlambda server run
+
+````shell
+$ hlambda metadata export
+````
+
+## Notice
+
+```
+This CLI is still in development. Main functionality may be missing, any contributions are greatly appreciated.
+```

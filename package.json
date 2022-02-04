@@ -1,0 +1,48 @@
+{
+  "name": "hlambda-cli",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Hlambda cli.",
+  "main": "src/index.js",
+  "bin": {
+    "hlambda": "src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hlambda/hlambda-cli.git"
+  },
+  "keywords": [
+    "hlambda",
+    "hasura",
+    "cli"
+  ],
+  "contributors": [
+    "Gordan Nekić <gordan@neki.ch>"
+  ],
+  "directories": {
+    "src": "src",
+    "test": "tests"
+  },
+  "scripts": {
+    "install": "npm i -g",
+    "test": "npm run mocha-run-tests",
+    "mocha-run-tests": "mocha --timeout 20000 --recursive \"./tests/**/*.test.js\""
+  },
+  "author": "Gordan Nekić",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/hlambda/hlambda-cli/issues"
+  },
+  "homepage": "https://github.com/hlambda/hlambda-cli#readme",
+  "devDependencies": {
+    "mocha": "^9.0.3"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^8.3.0",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^3.2.0",
+    "rimraf": "^3.0.2",
+    "yaml": "^1.10.2"
+  }
+}

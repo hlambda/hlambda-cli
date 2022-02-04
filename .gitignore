@@ -1,0 +1,10 @@
+node_modules/
+examples/
+temp/
+
+.DS_*
+*.sublime*
+psd
+thumb
+*.log
+.env

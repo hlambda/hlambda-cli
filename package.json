@@ -1,7 +1,7 @@
 {
   "name": "hlambda-cli",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Hlambda cli.",
   "main": "src/index.js",
   "bin": {
@@ -35,15 +35,22 @@
   },
   "homepage": "https://github.com/hlambda/hlambda-cli#readme",
   "devDependencies": {
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "mocha": "^9.0.3"
   },
   "dependencies": {
+    "adm-zip": "^0.5.9",
     "colors": "^1.4.0",
-    "commander": "^8.3.0",
+    "commander": "^9.0.0",
     "dotenv": "^16.0.0",
     "figlet": "^1.5.2",
+    "formdata-node": "^4.3.2",
     "hlambda": "^0.0.4",
     "node-fetch": "^3.2.0",
+    "open": "^8.4.0",
     "rimraf": "^3.0.2",
     "yaml": "^1.10.2"
   }

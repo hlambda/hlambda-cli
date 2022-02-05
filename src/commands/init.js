@@ -1,11 +1,18 @@
 import path from 'path';
 import { writeFile, mkdir, access } from 'fs/promises';
 
-import { errors } from './../errors/index.js'; 
-import { configTemplate, packageJsonTemplate, gitignoreTemplate, routerDemoJsTemplate, errorTemplate, hlambdaYamlTemplate } from './../templates/index.js';
+import { errors } from './../errors/index.js';
+import {
+  configTemplate,
+  packageJsonTemplate,
+  gitignoreTemplate,
+  routerDemoJsTemplate,
+  errorTemplate,
+  hlambdaYamlTemplate,
+} from './../templates/index.js';
 
 export const init = async (dirName, options) => {
-  (async () => {
+  await (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:', cwd);
 
@@ -17,13 +24,13 @@ export const init = async (dirName, options) => {
       })
       .catch((error) => {
         // console.log(error);
-        //throw new Error(errors.ERROR_FS_READ_ERROR);
+        // throw new Error(errors.ERROR_FS_READ_ERROR);
         return false;
       });
-    if (folderExists){
+    if (folderExists) {
       throw new Error(errors.ERROR_FOLDER_ALREADY_EXISTS);
     }
-    
+
     await mkdir(`./${dirName}`, { recursive: true })
       .then(() => {
         // console.log(`Created folder!`.green);
@@ -81,7 +88,7 @@ export const init = async (dirName, options) => {
         .catch(() => {
           console.log(`File write ${`./${dirName}/metadata/apps/example_demo_app/router.demo.js`} failed`.red);
         });
-      
+
       await writeFile(`./${dirName}/metadata/apps/example_demo_app/errors.demo.js`, errorTemplate, 'utf-8')
         .then(() => {
           // console.log(`File write ${`./${dirName}/metadata/apps/example_demo_app/errors.demo.js`} successfull!`.green);
@@ -100,9 +107,13 @@ export const init = async (dirName, options) => {
     }
 
     console.log(
-      `directory created. execute the following commands to continue:\n\n  cd ${dirName}\n  hlambda console\n`);
+      `directory created. execute the following commands to continue:\n\n  cd ${dirName}\n  hlambda console\n`
+    );
   })()
     .then(() => {})
-    .catch((error) => { console.log('[Error]'.red, `${error.message}`.red); })
+    .catch((error) => {
+      console.log('[Error]'.red, `${error.message}`.red);
+    });
 };
 
+export default init;

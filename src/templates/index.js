@@ -16,7 +16,6 @@ export const gitignoreTemplate = `
 node_modules/
 `;
 
-
 export const routerDemoJsTemplate = `
 import express from 'express';
 import asyncHandler from 'express-async-handler';
@@ -80,4 +79,4 @@ env:
 envForce:
   HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8081/v1/graphql"
   HASURA_GRAPHQL_ADMIN_SECRET: "demo"
-`
+`;

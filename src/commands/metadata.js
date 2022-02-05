@@ -90,7 +90,7 @@ export const serverClearMetadata = async (options) => {
     const headers = {
       'x-hlambda-admin-secret': adminSecret,
     };
-    const response = await fetch(`${endpoint}/console/api/v1/trigger-restart`, {
+    const response = await fetch(`${endpoint}/console/api/v1/metadata/clear`, {
       method: 'GET',
       // body: formData,
       headers,

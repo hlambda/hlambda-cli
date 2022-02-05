@@ -1,8 +1,8 @@
 {
   "name": "hlambda-cli",
   "type": "module",
-  "version": "0.0.3",
-  "description": "Hlambda cli.",
+  "version": "0.0.4",
+  "description": "CLI for hlambda server.",
   "main": "src/index.js",
   "bin": {
     "hlambda": "src/index.js"
@@ -24,7 +24,7 @@
     "test": "tests"
   },
   "scripts": {
-    "install": "npm i -g",
+    "global-install": "npm i -g",
     "test": "npm run mocha-run-tests",
     "mocha-run-tests": "mocha --timeout 20000 --recursive \"./tests/**/*.test.js\""
   },

@@ -175,6 +175,17 @@ export const metadataApply = async (options) => {
 
     console.log('Metadata applied!');
     console.log(response.status);
+
+    // This is magic from commander, the real flag was --no-auto-reload but we get positive logic transformation to autoReload
+    if (options?.autoReload) {
+      const responseRestart = await fetch(`${endpoint}/console/api/v1/trigger-restart`, {
+        method: 'GET',
+        // body: formData,
+        headers,
+      });
+      console.log('Metadata reloaded!');
+      console.log(responseRestart.status);
+    }
   })()
     .then(() => {})
     .catch((error) => {

@@ -1,6 +1,6 @@
 # hlambda-cli [![npm version](https://badge.fury.io/js/hlambda-cli.svg)](https://www.npmjs.com/package/hlambda-cli )
 
-hlambda-cli - Library containing functions and helpers used in hlambda-cli apps.
+hlambda-cli - CLI tool for managing hlambda server.
 
 [![NPM](https://nodei.co/npm/hlambda-cli.png?downloads=true&downloadRank=true&stars=true)](https://npmjs.org/hlambda-cli )
 
@@ -8,48 +8,58 @@ hlambda-cli - Library containing functions and helpers used in hlambda-cli apps.
 
 ### npm
 ```bash
-$ npm i hlambda-cli --save
-```
-
-### yarn
-```bash
-$ yarn add hlambda-cli
+$ npm install -g hlambda-cli
 ```
 
 ## Example
 
-````shell
-$ hlambda version
-$ hlambda --version
+````console
+hlambda@pc:~$ hlambda --version
 ````
 
-````shell
-$ hlambda init my-first-hlambda-app
+````console
+hlambda@pc:~$ hlambda init my-first-hlambda-app
 ````
 
-````shell
-$ cd my-first-hlambda-app
+````console
+hlambda@pc:~$ cd my-first-hlambda-app
 ````
 Change the admin_secret in the config.yaml and just run 
 
-````shell
-$ hlambda metadata apply
+````console
+hlambda@pc:~$ hlambda metadata apply
 ````
 
-or run the hlambda console with option --admin-secret <your_secret>
+or run the hlambda metadata apply with option --admin-secret <your_secret>
 
-````shell
-$ hlambda metadata apply --admin-secret <your_secret>
+````console
+hlambda@pc:~$ hlambda metadata apply --admin-secret <your_secret>
 ````
 
 to export existing data from the hlambda server run
 
-````shell
-$ hlambda metadata export
+````console
+hlambda@pc:~$ hlambda metadata export
 ````
 
-## Notice
+## Reloading metadata
 
-```
-This CLI is still in development. Main functionality may be missing, any contributions are greatly appreciated.
-```
+By default metadata apply should also automatically reload the metadata on the server unless `--no-auto-reload` option is set
+
+````console
+hlambda@pc:~$ hlambda metadata apply --no-auto-reload
+````
+
+to do it manually you can run:
+
+````console
+hlambda@pc:~$ hlambda metadata reload
+````
+
+## Clearing metadata
+
+If you want to clear all the metadata from the server 
+
+````console
+hlambda@pc:~$ hlambda metadata clear
+````

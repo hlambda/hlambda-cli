@@ -4,10 +4,10 @@
 // Date: 2022-02-05
 // ################################################################################
 // Main file, entry point for the CLI.
-
 import { Command } from 'commander';
 import { readFile } from 'fs/promises';
 import 'colors';
+import figlet from 'figlet';
 
 // Load the sub-commands
 import { init } from './commands/init.js';
@@ -18,13 +18,22 @@ import { serverReload, serverClearMetadata, metadataApply, metadataExport } from
 // import * as pckg from './../package.json'; // As of 2020 --experimental-json-modules flag is needed
 const pckg = JSON.parse(await readFile(new URL('./../package.json', import.meta.url)));
 
+// Do some ascii art... because we can
+const asciiArt = figlet.textSync('Hlambda', {
+  font: 'Ghost',
+  horizontalLayout: 'default',
+  verticalLayout: 'default',
+  width: 80,
+  whitespaceBreak: true,
+});
+
 // Init CLI program
 const program = new Command();
 
 // Define commander CLI program
 program
   .name('hlambda')
-  .description(`CLI for hlambda server. | v${pckg.version}`)
+  .description(`${Array(80 + 1).join('#')}\n${asciiArt}\n${Array(80 + 1).join('#')}\nCLI for hlambda server. | v${pckg.version} | Node.js v${process.versions.node}\n${Array(80 + 1).join('#')}`)
   // .allowUnknownOption()
   // .enablePositionalOptions()
   // .passThroughOptions()

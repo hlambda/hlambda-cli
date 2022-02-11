@@ -11,7 +11,9 @@ import {
   hlambdaYamlTemplate,
 } from './../templates/index.js';
 
-export const init = async (dirName, options) => {
+import CLIErrorHandler from './../utils/CLIErrorHandler.js';
+
+export const init = async (dirName, options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:', cwd);
@@ -111,9 +113,7 @@ export const init = async (dirName, options) => {
     );
   })()
     .then(() => {})
-    .catch((error) => {
-      console.log('[Error]'.red, `${error.message}`.red);
-    });
+    .catch(CLIErrorHandler(program));
 };
 
 export default init;

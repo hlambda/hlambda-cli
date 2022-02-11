@@ -1,23 +1,19 @@
-export const configTemplate = `
-version: 1
+export const configTemplate = `version: 1
 endpoint: http://localhost:8081
 metadata_directory: metadata
 #admin_secret: demo
 `;
 
-export const packageJsonTemplate = `
-{
+export const packageJsonTemplate = `{
   "type": "module",
   "dependencies": {}
 }
 `;
 
-export const gitignoreTemplate = `
-node_modules/
+export const gitignoreTemplate = `node_modules/
 `;
 
-export const routerDemoJsTemplate = `
-import express from 'express';
+export const routerDemoJsTemplate = `import express from 'express';
 import asyncHandler from 'express-async-handler';
 
 // Execute GraphQL calls
@@ -39,8 +35,7 @@ export default router;
 
 `;
 
-export const errorTemplate = `
-import { createErrorDescriptor } from 'hlambda';
+export const errorTemplate = `import { createErrorDescriptor } from 'hlambda';
 
 // --- START SAFE TO EDIT ---
 
@@ -64,8 +59,7 @@ export default errors;
 
 `;
 
-export const hlambdaYamlTemplate = `
-# Defines if the app is enabled or not disabled apps are skipped from importing
+export const hlambdaYamlTemplate = `# Defines if the app is enabled or not disabled apps are skipped from importing
 enabled: true
 # Defines if we want to use namespace or not
 use_namespace: true

@@ -1,7 +1,7 @@
 {
   "name": "hlambda-cli",
   "type": "module",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "CLI for hlambda server.",
   "main": "src/index.js",
   "bin": {
@@ -52,6 +52,7 @@
     "node-fetch": "^3.2.0",
     "open": "^8.4.0",
     "rimraf": "^3.0.2",
-    "yaml": "^1.10.2"
+    "yaml": "^1.10.2",
+    "yawn-yaml": "^1.5.0"
   }
 }

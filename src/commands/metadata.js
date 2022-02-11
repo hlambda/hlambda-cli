@@ -9,32 +9,16 @@ import rimraf from 'rimraf';
 
 import { errors } from './../errors/index.js';
 
-export const serverReload = async (options) => {
+import CLIErrorHandler from './../utils/CLIErrorHandler.js';
+import { loadConfigFromYAML } from './../utils/loadConfigFromYAML.js';
+
+export const serverReload = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:', cwd);
 
     // Load yaml configuration
-    // TODO: Maybe check for both .yaml and .yml in future...
-    const configurationFilePath = path.resolve(cwd, options.config, 'config.yaml');
-    const configuration = await readFile(configurationFilePath, 'utf8')
-      .then((fileData) => {
-        const result = YAML.parse(fileData);
-        console.log(
-          `[configuration loader] Config`.green,
-          `${configurationFilePath}`.yellow,
-          `successfully loaded...`.green
-        );
-        return result;
-      })
-      .catch((error) => {
-        console.error(`[configuration loader] Config`.red, `${configurationFilePath.yellow}`, `errored out...`.red);
-        // console.error(error);
-        return undefined;
-      });
-    if (typeof configuration === 'undefined') {
-      throw Error(errors.ERROR_CONFIGURATION_FILE_IS_MISSING);
-    }
+    const configuration = await loadConfigFromYAML(options);
 
     const endpoint = configuration?.endpoint ?? 'http://localhost:8081';
     const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
@@ -52,37 +36,16 @@ export const serverReload = async (options) => {
     console.log(response.status);
   })()
     .then(() => {})
-    .catch((error) => {
-      console.log('[Error]'.red, `${error.message}`.red);
-    });
+    .catch(CLIErrorHandler(program));
 };
 
-export const serverClearMetadata = async (options) => {
+export const serverClearMetadata = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:', cwd);
 
     // Load yaml configuration
-    // TODO: Maybe check for both .yaml and .yml in future...
-    const configurationFilePath = path.resolve(cwd, options.config, 'config.yaml');
-    const configuration = await readFile(configurationFilePath, 'utf8')
-      .then((fileData) => {
-        const result = YAML.parse(fileData);
-        console.log(
-          `[configuration loader] Config`.green,
-          `${configurationFilePath}`.yellow,
-          `successfully loaded...`.green
-        );
-        return result;
-      })
-      .catch((error) => {
-        console.error(`[configuration loader] Config`.red, `${configurationFilePath.yellow}`, `errored out...`.red);
-        // console.error(error);
-        return undefined;
-      });
-    if (typeof configuration === 'undefined') {
-      throw Error(errors.ERROR_CONFIGURATION_FILE_IS_MISSING);
-    }
+    const configuration = await loadConfigFromYAML(options);
 
     const endpoint = configuration?.endpoint ?? 'http://localhost:8081';
     const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
@@ -100,12 +63,10 @@ export const serverClearMetadata = async (options) => {
     console.log(response.status);
   })()
     .then(() => {})
-    .catch((error) => {
-      console.log('[Error]'.red, `${error.message}`.red);
-    });
+    .catch(CLIErrorHandler(program));
 };
 
-export const metadataApply = async (options) => {
+export const metadataApply = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:', cwd);
@@ -113,26 +74,7 @@ export const metadataApply = async (options) => {
     // console.log(options);
 
     // Load yaml configuration
-    // TODO: Maybe check for both .yaml and .yml in future...
-    const configurationFilePath = path.resolve(cwd, options.config, 'config.yaml');
-    const configuration = await readFile(configurationFilePath, 'utf8')
-      .then((fileData) => {
-        const result = YAML.parse(fileData);
-        console.log(
-          `[configuration loader] Config`.green,
-          `${configurationFilePath}`.yellow,
-          `successfully loaded...`.green
-        );
-        return result;
-      })
-      .catch((error) => {
-        console.error(`[configuration loader] Config`.red, `${configurationFilePath.yellow}`, `errored out...`.red);
-        // console.error(error);
-        return undefined;
-      });
-    if (typeof configuration === 'undefined') {
-      throw Error(errors.ERROR_CONFIGURATION_FILE_IS_MISSING);
-    }
+    const configuration = await loadConfigFromYAML(options);
 
     const endpoint = configuration?.endpoint ?? 'http://localhost:8081';
     const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
@@ -188,12 +130,10 @@ export const metadataApply = async (options) => {
     }
   })()
     .then(() => {})
-    .catch((error) => {
-      console.log('[Error]'.red, `${error.message}`.red);
-    });
+    .catch(CLIErrorHandler(program));
 };
 
-export const metadataExport = async (options) => {
+export const metadataExport = async (options, program) => {
   (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:', cwd);
@@ -201,26 +141,7 @@ export const metadataExport = async (options) => {
     // console.log(options);
 
     // Load yaml configuration
-    // TODO: Maybe check for both .yaml and .yml in future...
-    const configurationFilePath = path.resolve(cwd, options.config, 'config.yaml');
-    const configuration = await readFile(configurationFilePath, 'utf8')
-      .then((fileData) => {
-        const result = YAML.parse(fileData);
-        console.log(
-          `[configuration loader] Config`.green,
-          `${configurationFilePath}`.yellow,
-          `successfully loaded...`.green
-        );
-        return result;
-      })
-      .catch((error) => {
-        console.error(`[configuration loader] Config`.red, `${configurationFilePath.yellow}`, `errored out...`.red);
-        // console.error(error);
-        return undefined;
-      });
-    if (typeof configuration === 'undefined') {
-      throw Error(errors.ERROR_CONFIGURATION_FILE_IS_MISSING);
-    }
+    const configuration = await loadConfigFromYAML(options);
 
     const endpoint = configuration?.endpoint ?? 'http://localhost:8081';
     const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
@@ -234,6 +155,10 @@ export const metadataExport = async (options) => {
       method: 'POST',
       headers,
     });
+
+    if (response.status !== 200) {
+      throw new Error(errors.ERROR_INVALID_HLAMBDA_ADMIN_SECRET);
+    }
 
     // console.log(response.headers);
 
@@ -256,7 +181,5 @@ export const metadataExport = async (options) => {
     console.log('Metadata exported!');
   })()
     .then(() => {})
-    .catch((error) => {
-      console.log('[Error]'.red, `${error.message}`.red);
-    });
+    .catch(CLIErrorHandler(program));
 };

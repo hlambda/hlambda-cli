@@ -6,7 +6,9 @@ import open from 'open';
 
 import { errors } from './../errors/index.js';
 
-export const startConsole = async (options) => {
+import CLIErrorHandler from './../utils/CLIErrorHandler.js';
+
+export const startConsole = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:', cwd);
@@ -37,14 +39,15 @@ export const startConsole = async (options) => {
 
     console.log('Starting browser...');
 
-    // TODO: I have issue with this because if in yaml file endpoint is defined as `evilCalc.exe` it will open random executable,
-    // is this security issue or just concearn that dev should receive warning for? (also it contains `/console` but that can be skipped)
-    open(`${endpoint}/console`);
+    // Sanity check to not execute open on evilCalc.exe :) , we only open URLS that start with `http://` or `https://`
+    if (`${endpoint}/console`.match(/^https?:\/\//g)) {
+      open(`${endpoint}/console`);
+    } else {
+      throw new Error(errors.ERROR_INVALID_ENDPOINT_URL);
+    }
   })()
     .then(() => {})
-    .catch((error) => {
-      console.log('[Error]'.red, `${error.message}`.red);
-    });
+    .catch(CLIErrorHandler(program));
 };
 
 export default startConsole;

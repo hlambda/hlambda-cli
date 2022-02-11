@@ -13,33 +13,50 @@ $ npm install -g hlambda-cli
 
 ## Example
 
+First you will need to get hlambda server running, either in docker or locally.
+
 ````console
-hlambda@pc:~$ hlambda --version
+$ hlambda --version
 ````
 
 ````console
-hlambda@pc:~$ hlambda init my-first-hlambda-app
+$ hlambda init my-first-hlambda-app
 ````
 
 ````console
-hlambda@pc:~$ cd my-first-hlambda-app
+$ cd my-first-hlambda-app
 ````
-Change the admin_secret in the config.yaml and just run 
+
+Change the admin_secret in the config.yaml manually or just run
 
 ````console
-hlambda@pc:~$ hlambda metadata apply
+$ hlambda config save --admin-secret "demo"
 ````
 
+this will edit the config.yaml file and save admin secret value in that file (please take extra care when commiting config.yaml file to not leak secrets)
+
+You can then export the existing metadata from the running server use
+
+````console
+$ hlambda metadata export
+````
+
+or you can apply the changes by running
+
+````console
+$ hlambda metadata apply
+````
 or run the hlambda metadata apply with option --admin-secret <your_secret>
+which is a prefered option to do this action instead of saving secret it in config.yaml
 
 ````console
-hlambda@pc:~$ hlambda metadata apply --admin-secret <your_secret>
+$ hlambda metadata apply --admin-secret <your_secret>
 ````
 
 to export existing data from the hlambda server run
 
 ````console
-hlambda@pc:~$ hlambda metadata export
+$ hlambda metadata export --admin-secret <your_secret>
 ````
 
 ## Reloading metadata
@@ -47,13 +64,13 @@ hlambda@pc:~$ hlambda metadata export
 By default metadata apply should also automatically reload the metadata on the server unless `--no-auto-reload` option is set
 
 ````console
-hlambda@pc:~$ hlambda metadata apply --no-auto-reload
+$ hlambda metadata apply --no-auto-reload
 ````
 
 to do it manually you can run:
 
 ````console
-hlambda@pc:~$ hlambda metadata reload
+$ hlambda metadata reload
 ````
 
 ## Clearing metadata
@@ -61,5 +78,5 @@ hlambda@pc:~$ hlambda metadata reload
 If you want to clear all the metadata from the server 
 
 ````console
-hlambda@pc:~$ hlambda metadata clear
+$ hlambda metadata clear
 ````

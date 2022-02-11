@@ -4,10 +4,13 @@
 
 // eslint-disable-next-line max-classes-per-file
 import { EOL } from 'os';
-import yamlJSLol from 'yaml-js';
+import yamlJSDefaultExport from 'yaml-js';
 
-import { load, dump } from 'js-yaml';
+import jsYamlDefaultExport from 'js-yaml';
+
 import _ from 'lodash';
+
+const { load, dump } = jsYamlDefaultExport;
 
 class YAWNError extends Error {
   constructor(message) {
@@ -19,7 +22,7 @@ class YAWNError extends Error {
 
 const { isArray, isString, isObject, isUndefined, isNull, isNumber, isEqual, repeat, each, includes, last } = _;
 
-const { compose, serialize } = yamlJSLol;
+const { compose, serialize } = yamlJSDefaultExport;
 
 const NULL_TAG = 'tag:yaml.org,2002:null';
 const STR_TAG = 'tag:yaml.org,2002:str';

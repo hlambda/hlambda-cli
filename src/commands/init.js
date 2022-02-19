@@ -1,5 +1,6 @@
 import path from 'path';
 import { writeFile, mkdir, access } from 'fs/promises';
+import rimraf from 'rimraf';
 
 import { errors } from './../errors/index.js';
 import {
@@ -9,6 +10,7 @@ import {
   routerDemoJsTemplate,
   errorTemplate,
   hlambdaYamlTemplate,
+  hlambdaREADMETemplate,
 } from './../templates/index.js';
 
 import CLIErrorHandler from './../utils/CLIErrorHandler.js';
@@ -16,11 +18,15 @@ import CLIErrorHandler from './../utils/CLIErrorHandler.js';
 export const init = async (dirName, options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
+    const initFilePath = path.resolve(cwd, dirName);
+    console.log(`Trying to initialize app in:`.green, `${initFilePath}`.yellow);
+
+    const { force, forceRemove } = options;
     const includeDemoApp = !options.clean; // Flip the clean flag.
 
-    const folderExists = await access(`./${dirName}`)
+    const folderExists = await access(initFilePath)
       .then((result) => {
         return true;
       })
@@ -30,7 +36,24 @@ export const init = async (dirName, options, program) => {
         return false;
       });
     if (folderExists) {
-      throw new Error(errors.ERROR_FOLDER_ALREADY_EXISTS);
+      if (force) {
+        if (forceRemove) {
+          if (
+            typeof initFilePath === 'string' &&
+            initFilePath !== '' &&
+            initFilePath !== '/' &&
+            initFilePath !== '/*'
+          ) {
+            // Sanity check !!!
+            console.log(`Removing everything inside ${initFilePath}`.red);
+            rimraf.sync(`${initFilePath}/*`); // Please be careful...
+          } else {
+            throw new Error(errors.ERROR_DANGEROUS_SANITY_CHECK_DID_NOT_PASS);
+          }
+        }
+      } else {
+        throw new Error(errors.ERROR_FOLDER_ALREADY_EXISTS);
+      }
     }
 
     await mkdir(`./${dirName}`, { recursive: true })
@@ -59,6 +82,14 @@ export const init = async (dirName, options, program) => {
       });
 
     if (includeDemoApp) {
+      await writeFile(`./${dirName}/README.md`, hlambdaREADMETemplate, 'utf-8')
+        .then(() => {
+          // console.log(`File write ${`./${dirName}/README.md`} successfull!`.green);
+        })
+        .catch(() => {
+          console.log(`File write ${`./${dirName}/README.md`} failed`.red);
+        });
+
       await writeFile(`./${dirName}/metadata/package.json`, packageJsonTemplate, 'utf-8')
         .then(() => {
           // console.log(`File write ${`./${dirName}/metadata/package.json`} successfull!`.green);
@@ -109,7 +140,8 @@ export const init = async (dirName, options, program) => {
     }
 
     console.log(
-      `directory created. execute the following commands to continue:\n\n  cd ${dirName}\n  hlambda console\n`
+      `Directory created. Execute the following commands to continue:`.green,
+      `\n\n  ${'cd'.green} ${dirName}\n  ${'hlambda'.green} console\n`
     );
   })()
     .then(() => {})

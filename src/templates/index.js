@@ -70,7 +70,15 @@ env:
   HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8081/v1/graphql"
   HASURA_GRAPHQL_ADMIN_SECRET: "demo"
   SPECIAL_ENV_VARIABLE: "Demo content of the special env variable"
-envForce:
+envForce: # Totally dangerous but really really useful (I really hope you are aware of what this will do)
   HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8081/v1/graphql"
-  HASURA_GRAPHQL_ADMIN_SECRET: "demo"
+  HASURA_GRAPHQL_ADMIN_SECRET: "IWillForceThisValue"
+`;
+
+export const hlambdaREADMETemplate = `# Hlambda
+
+This is your folder containing all the metadata needed for the app to run in Hlambda server.
+
+Please read more about on https://hlambda.io
+
 `;

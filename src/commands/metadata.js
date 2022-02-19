@@ -1,6 +1,6 @@
 import path from 'path';
-import { readFile } from 'fs/promises';
-import YAML from 'yaml';
+// import { readFile } from 'fs/promises';
+// import YAML from 'yaml';
 import fetch from 'node-fetch';
 // import FormData from 'form-data';
 import { FormData, File } from 'formdata-node';
@@ -15,7 +15,7 @@ import { loadConfigFromYAML } from './../utils/loadConfigFromYAML.js';
 export const serverReload = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
     // Load yaml configuration
     const configuration = await loadConfigFromYAML(options);
@@ -32,7 +32,9 @@ export const serverReload = async (options, program) => {
       headers,
     });
 
-    console.log('Metadata reloaded!');
+    if (response.status === 200) {
+      console.log('Metadata reloaded!'.green);
+    }
     console.log(response.status);
   })()
     .then(() => {})
@@ -42,7 +44,7 @@ export const serverReload = async (options, program) => {
 export const serverClearMetadata = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
     // Load yaml configuration
     const configuration = await loadConfigFromYAML(options);
@@ -59,8 +61,27 @@ export const serverClearMetadata = async (options, program) => {
       headers,
     });
 
-    console.log('Metadata cleared!');
+    if (response.status === 200) {
+      console.log('Metadata cleared!'.green);
+    }
     console.log(response.status);
+
+    if (response.status !== 200) {
+      throw new Error(errors.ERROR_INVALID_HLAMBDA_ADMIN_SECRET);
+    }
+
+    // This is magic from commander, the real flag was --no-auto-reload but we get positive logic transformation to autoReload
+    if (options?.autoReload) {
+      const responseRestart = await fetch(`${endpoint}/console/api/v1/trigger-restart`, {
+        method: 'GET',
+        // body: formData,
+        headers,
+      });
+      if (responseRestart.status === 200) {
+        console.log('Metadata reloaded after clearing!'.green);
+      }
+      console.log(responseRestart.status);
+    }
   })()
     .then(() => {})
     .catch(CLIErrorHandler(program));
@@ -69,7 +90,7 @@ export const serverClearMetadata = async (options, program) => {
 export const metadataApply = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
     // console.log(options);
 
@@ -83,7 +104,7 @@ export const metadataApply = async (options, program) => {
     // ZIP the metadata
     const zip = new AdmZip();
     zip.addLocalFolder(path.resolve(cwd, options.config, metadataDirectory));
-    console.log('Creating zip from the metadata');
+    console.log('Creating zip from the metadata'.yellow);
 
     // POST metadata to the API
     const payloadAsBuffer = zip.toBuffer();
@@ -115,7 +136,9 @@ export const metadataApply = async (options, program) => {
       headers,
     });
 
-    console.log('Metadata applied!');
+    if (response.status === 200) {
+      console.log('Metadata applied!'.green);
+    }
     console.log(response.status);
 
     // This is magic from commander, the real flag was --no-auto-reload but we get positive logic transformation to autoReload
@@ -125,7 +148,7 @@ export const metadataApply = async (options, program) => {
         // body: formData,
         headers,
       });
-      console.log('Metadata reloaded!');
+      console.log('Metadata reloaded!'.green);
       console.log(responseRestart.status);
     }
   })()
@@ -136,7 +159,7 @@ export const metadataApply = async (options, program) => {
 export const metadataExport = async (options, program) => {
   (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
     // console.log(options);
 
@@ -171,14 +194,26 @@ export const metadataExport = async (options, program) => {
 
     const metadataFilePath = path.resolve(cwd, options.config, metadataDirectory);
 
-    console.log(`Removing all the local metadata... ${metadataFilePath}`);
-
     // Dangerous when you think about it... small mistake here and it can delete a lot of things, please be careful!
-    rimraf.sync(metadataFilePath);
+    if (
+      typeof metadataFilePath === 'string' &&
+      metadataFilePath !== '' &&
+      metadataFilePath !== '/' &&
+      metadataFilePath !== '/*'
+    ) {
+      // Sanity check !!!
+      console.log(`Removing all the local metadata... ${metadataFilePath}`.yellow);
+      rimraf.sync(metadataFilePath); // Please be careful...
+    } else {
+      throw new Error(errors.ERROR_DANGEROUS_SANITY_CHECK_DID_NOT_PASS);
+    }
 
     zip.extractAllTo(metadataFilePath, true);
 
-    console.log('Metadata exported!');
+    if (response.status === 200) {
+      console.log('Metadata exported!'.green);
+    }
+    console.log(response.status);
   })()
     .then(() => {})
     .catch(CLIErrorHandler(program));

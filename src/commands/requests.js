@@ -10,7 +10,7 @@ import { loadConfigFromYAML } from './../utils/loadConfigFromYAML.js';
 export const requests = (method) => async (route, options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
     // Load yaml configuration
     const configuration = await loadConfigFromYAML(options);

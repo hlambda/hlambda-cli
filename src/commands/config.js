@@ -11,7 +11,7 @@ import { loadConfigFromYAML } from './../utils/loadConfigFromYAML.js';
 export const config = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
     // Load yaml configuration
     const configuration = await loadConfigFromYAML(options);
@@ -21,13 +21,14 @@ export const config = async (options, program) => {
 
     const configurationFilePath = path.resolve(cwd, options.config, 'config.yaml');
 
+    // Read the raw content of the config file...
     const data = await readFile(configurationFilePath, 'utf8')
       .then((fileData) => {
-        console.log(`Config`.green, `${configurationFilePath}`.yellow, `successfully loaded...`.green);
+        // console.log(`Config`.green, `${configurationFilePath}`.yellow, `successfully loaded...`.green);
         return fileData;
       })
       .catch((error) => {
-        console.error(`Config`.red, `${configurationFilePath.yellow}`, `errored out...`.red);
+        // console.error(`Config`.red, `${configurationFilePath.yellow}`, `errored out...`.red);
         // console.error(error);
         return undefined;
       });

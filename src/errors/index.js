@@ -40,6 +40,19 @@ export const errors = {
     message: 'Endpoint URL does not start with http:// or https:// please verify the endpoint value in config.yaml',
     exitCode: 4,
   },
+  ERROR_CONNECTION_REFUSED: {
+    message: 'Connection refused for the specific endpoint, please check the endpoint url and port.',
+    exitCode: 5,
+  },
+  ERROR_CONFIGURATION_YAML_FILE_IS_INVALID: {
+    message: 'Configuration file is invalid, please check yaml syntax.',
+    exitCode: 6,
+  },
+  ERROR_DANGEROUS_SANITY_CHECK_DID_NOT_PASS: {
+    message:
+      'I think we have saved you from something bad... please report this incident. (Example: Process of deleting files received root dir/path)',
+    exitCode: 911,
+  },
 
   // Special errors
   UNKNOWN_ERROR: {

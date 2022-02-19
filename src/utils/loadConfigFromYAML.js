@@ -11,20 +11,24 @@ export const loadConfigFromYAML = async (options) => {
   // Load yaml configuration
   // TODO: Maybe check for both .yaml and .yml in future...
   const configurationFilePath = path.resolve(cwd, options.config, 'config.yaml');
+  console.log(`Trying to load config file from:`.green, `${configurationFilePath}`.yellow);
 
   const configuration = await readFile(configurationFilePath, 'utf8')
     .then((fileData) => {
       const result = YAML.parse(fileData);
-      console.log(
-        `[configuration loader] Config`.green,
-        `${configurationFilePath}`.yellow,
-        `successfully loaded...`.green
-      );
+      // console.log(
+      //   `[configuration loader] Config`.green,
+      //   `${configurationFilePath}`.yellow,
+      //   `successfully loaded...`.green
+      // );
       return result;
     })
     .catch((error) => {
       // console.error(`[configuration loader] Config`.red, `${configurationFilePath.yellow}`, `errored out...`.red);
       // console.error(error);
+      if (error.name === 'YAMLSemanticError') {
+        throw Error(errors.ERROR_CONFIGURATION_YAML_FILE_IS_INVALID);
+      }
       return undefined;
     });
 

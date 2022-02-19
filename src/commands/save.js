@@ -11,7 +11,7 @@ import { loadConfigFromYAML } from './../utils/loadConfigFromYAML.js';
 export const save = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
-    console.log('Executing in cwd:', cwd);
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
     // Load yaml configuration
     const configuration = await loadConfigFromYAML(options);

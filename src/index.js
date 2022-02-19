@@ -17,6 +17,14 @@ import { save } from './commands/save.js';
 import { requests } from './commands/requests.js';
 import { startConsole } from './commands/console.js';
 import { serverReload, serverClearMetadata, metadataApply, metadataExport } from './commands/metadata.js';
+import { checkForNewVersion, checkWhatIsNewInCurrentVersion } from './commands/update.js';
+import {
+  serverGetLogs,
+  serverGetErrors,
+  serverGetConstants,
+  serverShell,
+  serverNPMInstall,
+} from './commands/server.js';
 
 // Import package.json because we need to detect version from single source of truth.
 // import * as pckg from './../package.json'; // As of 2020 --experimental-json-modules flag is needed
@@ -51,105 +59,186 @@ program
     } | Node.js v${process.versions.node}\n${Array(80 + 1).join('#')}`
   )
   // .allowUnknownOption()
-  // .enablePositionalOptions()
-  // .passThroughOptions()
+  .enablePositionalOptions()
+  .passThroughOptions()
+  .option('--no-color', 'Disable CLI color output.')
   .version(`${pckg.version}`, '-v, --version', 'Output the current version.');
 // This line is bugged in commander 9.0.0, --version does not work but -version works and -vers works, super strange.
 // If persist in multiple versions open the issue on https://github.com/tj/commander.js
 // .version(pckg.version, '-V, -v, --vers, --version', 'Output the current version.');
 const versionProgram = program
   .command('version')
+  .alias('v')
   .description('Output the current version.')
   .action(() => {
     console.log(`${pckg.version}`);
   });
 
+const checkForNewVersionProgram = program
+  .command('update')
+  .alias('u')
+  .description('Check if there is a new cli version.')
+  .action(checkForNewVersion);
+
+const changeLogProgram = program
+  .command('news')
+  .alias('n')
+  .description('Output the change log. And any announcement from hlambda team.')
+  .action(checkWhatIsNewInCurrentVersion);
+
 // Initialization sub-program
 const initProgram = program
   .command('init')
+  .alias('i')
   .description('Init configuration and metadata for the hlambda server.')
-  .argument('<folder_name>', 'folder name')
-  .option('-c, --clean', "don't include demo app in initial metadata.")
+  .argument('<folder_name>', 'Folder name.')
+  .option('-c, --clean', "Don't include demo app in initial metadata.")
+  .option('-f, --force', 'Force re-init, it will write over the existing files.')
+  .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
   .action(init);
 
 // Save/Configure sub-program
 const configProgram = program
   .command('config')
-  .description('Read or update configuration in the local config.yaml.')
-  .option('-c, --config <path>', 'path to config.yaml', '')
+  .alias('c')
+  .alias('conf')
+  .description('Read or update configuration in the local config.yaml file.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(config);
 
 const saveProgram = configProgram
   .command('save')
+  .alias('s')
   .description('Update configuration in the local config.yaml.')
-  .option('-c, --config <path>', 'path to config.yaml', '')
-  .option('-e, --endpoint <endpoint>', 'endpoint, url for hlambda server.')
-  .option('-s, --admin-secret <secret>', 'admin secret used for auth.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-e, --endpoint <endpoint>', 'Endpoint, url for hlambda server.')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(save);
 
 const readProgram = configProgram
   .command('read')
+  .alias('r')
   .description('Update configuration in the local config.yaml.')
-  .option('-c, --config <path>', 'path to config.yaml', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(config);
 
 // Console sub-program
 const consoleProgram = program
   .command('console')
+  .alias('o')
   .description('Opens browser to the hlambda console')
-  .option('-c, --config <path>', 'path to config.yaml', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   // .argument('<string>', 'admin secret')
   .action(startConsole);
 
 // Metadata sub-program
-const metadata = program.command('metadata').description('Import/Export metadata');
+const metadata = program
+  .command('metadata')
+  .alias('meta')
+  .alias('m')
+  .description('Apply/Export/Clear/Reload metadata, your code and configurations');
 
 metadata
   .command('reload')
+  .alias('r')
   .description('Reload existing metadata on the server')
-  .option('-c, --config <path>', 'path to config.yaml', '')
-  .option('-s, --admin-secret <secret>', 'admin secret used for auth.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverReload);
 
 metadata
   .command('clear')
+  .alias('c')
   .description('Clear existing metadata on the server')
-  .option('-c, --config <path>', 'path to config.yaml', '')
-  .option('-s, --admin-secret <secret>', 'admin secret used for auth.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .option('--no-auto-reload', 'should metadata apply skip auto reload')
   .action(serverClearMetadata);
 
 metadata
   .command('apply')
+  .alias('a')
   .description('Apply metadata')
-  .option('-c, --config <path>', 'path to config.yaml', '')
-  .option('-s, --admin-secret <secret>', 'admin secret used for auth.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--no-auto-reload', 'should metadata apply skip auto reload')
   .action(metadataApply);
 
 metadata
   .command('export')
+  .alias('e')
   .description('Export metadata')
-  .option('-c, --config <path>', 'path to config.yaml', '')
-  .option('-s, --admin-secret <secret>', 'admin secret used for auth.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(metadataExport);
 
+const serverProgram = program.command('server').alias('s').description('Do basic server request.');
+
+serverProgram
+  .command('logs')
+  .alias('l')
+  .description('Show server logs')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .action(serverGetLogs);
+
+serverProgram
+  .command('errors')
+  .alias('e')
+  .description('Show server errors')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .action(serverGetErrors);
+
+serverProgram
+  .command('constants')
+  .alias('c')
+  .description('Show server constants')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .action(serverGetConstants);
+
+serverProgram
+  .command('shell')
+  .alias('s')
+  .description('Show server constants')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .action(serverShell);
+
+const npmServerProgram = serverProgram
+  .command('npm')
+  .description('Run npm commands.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.');
+
+npmServerProgram
+  .command('install')
+  .alias('i')
+  .description('Run npm install. (Installing metadata dependency on the server)')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .action(serverNPMInstall);
+
 // We already have node-fetch why should we use curl :) ?
-const curlProgram = program.command('request').description('Do basic requests.');
+const curlProgram = program.command('request').alias('r').description('Do basic requests.');
 
 const getCurlProgram = curlProgram
   .command('get')
+  .alias('g')
   .description('Makes GET request to the endpoint.')
   .argument('<route_path>', 'route_path')
-  .option('-c, --config <path>', 'Path to config.yaml', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
   .action(requests('GET'));
 
 const postCurlProgram = curlProgram
   .command('post')
+  .alias('p')
   .description('Makes POST request to the endpoint.')
   .argument('<route_path>', 'route_path')
-  .option('-c, --config <path>', 'Path to config.yaml', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
   .action(requests('POST'));
@@ -158,7 +247,7 @@ const putCurlProgram = curlProgram
   .command('put')
   .description('Makes PUT request to the endpoint.')
   .argument('<route_path>', 'route_path')
-  .option('-c, --config <path>', 'Path to config.yaml', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
   .action(requests('PUT'));
@@ -167,7 +256,7 @@ const deleteCurlProgram = curlProgram
   .command('delete')
   .description('Makes DELETE request to the endpoint.')
   .argument('<route_path>', 'route_path')
-  .option('-c, --config <path>', 'Path to config.yaml', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
   .action(requests('DELETE'));
@@ -176,7 +265,7 @@ const optionsCurlProgram = curlProgram
   .command('options')
   .description('Makes OPTIONS request to the endpoint.')
   .argument('<route_path>', 'route_path')
-  .option('-c, --config <path>', 'Path to config.yaml', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
   .action(requests('OPTIONS'));

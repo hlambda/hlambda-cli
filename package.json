@@ -1,7 +1,7 @@
 {
   "name": "hlambda-cli",
   "type": "module",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "CLI for hlambda server.",
   "main": "src/index.js",
   "bin": {

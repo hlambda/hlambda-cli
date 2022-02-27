@@ -27,6 +27,8 @@ import {
 } from './commands/server.js';
 import addEnv from './commands/environment/add.js';
 import deleteEnv from './commands/environment/delete.js';
+import dockerSnippet from './commands/snippet/docker.js';
+import dockerComposeSnippet from './commands/snippet/docker-compose.js';
 
 // Import package.json because we need to detect version from single source of truth.
 // import * as pckg from './../package.json'; // As of 2020 --experimental-json-modules flag is needed
@@ -78,17 +80,26 @@ const versionProgram = program
 
 // --- Snippet Program ---
 // Idea is to have quick snippets in CLI
-const snippetProgram = program
-  .command('snippets')
-  .alias('snip')
-  .description('Output default or create new snippets.')
+const snippetProgram = program.command('snippets').alias('snip').description('Output default or create new snippets.');
+
+const dockerSnippetProgram = snippetProgram
+  .command('docker')
+  .alias('d')
+  .description('Shows docker snippet')
+  .action(dockerSnippet);
+
+const dockerComposeSnippetProgram = snippetProgram
+  .command('docker-compose')
+  .alias('dc')
+  .description('Shows docker compose snippet')
+  .action(dockerComposeSnippet);
 
 // --- Env Program ---
 const environmentsProgram = program
   .command('envrionments')
   .alias('env')
   .description('Configure environments.')
-  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '');
 
 const envAddProgram = environmentsProgram
   .command('add')

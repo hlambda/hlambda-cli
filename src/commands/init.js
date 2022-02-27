@@ -70,7 +70,16 @@ export const init = async (dirName, options, program) => {
         // console.log(`Created folder!`.green);
       })
       .catch(() => {
-        console.log(`Create folder failed`.red);
+        console.log(`Create metadata folder failed`.red);
+      });
+
+    // Create environments folder
+    await mkdir(`./${dirName}/environments`, { recursive: true })
+      .then(() => {
+        // console.log(`Created folder!`.green);
+      })
+      .catch(() => {
+        console.log(`Create environments folder failed`.red);
       });
 
     await writeFile(`./${dirName}/config.yaml`, configTemplate, 'utf-8')

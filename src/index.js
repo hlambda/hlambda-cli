@@ -25,6 +25,8 @@ import {
   serverShell,
   serverNPMInstall,
 } from './commands/server.js';
+import addEnv from './commands/environment/add.js';
+import deleteEnv from './commands/environment/delete.js';
 
 // Import package.json because we need to detect version from single source of truth.
 // import * as pckg from './../package.json'; // As of 2020 --experimental-json-modules flag is needed
@@ -74,6 +76,35 @@ const versionProgram = program
     console.log(`${pckg.version}`);
   });
 
+// --- Snippet Program ---
+// Idea is to have quick snippets in CLI
+const snippetProgram = program
+  .command('snippets')
+  .alias('snip')
+  .description('Output default or create new snippets.')
+
+// --- Env Program ---
+const environmentsProgram = program
+  .command('envrionments')
+  .alias('env')
+  .description('Configure environments.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+
+const envAddProgram = environmentsProgram
+  .command('add')
+  .alias('a')
+  .description('Adds new environment.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .action(addEnv);
+
+const envDeleteProgram = environmentsProgram
+  .command('delete')
+  .alias('d')
+  .description('Deletes new environment.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .action(deleteEnv);
+
+// --- Update Program ---
 const checkForNewVersionProgram = program
   .command('update')
   .alias('u')

@@ -5,7 +5,9 @@
   "description": "CLI for hlambda server.",
   "main": "src/index.js",
   "bin": {
-    "hlambda": "src/index.js"
+    "hlambda": "src/index.js",
+    "hla": "src/index.js",
+    "hl": "src/index.js"
   },
   "repository": {
     "type": "git",

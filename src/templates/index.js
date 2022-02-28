@@ -5,8 +5,8 @@ metadata_directory: metadata
 `;
 
 export const configEnvTemplate = `version: 1
-endpoint: http://localhost:8081
-admin_secret: {{ENVIRONMENT_ADMIN_SECRET}}
+endpoint: "{{ENV_DEV_HLAMBDA_ENDPOINT}}"
+admin_secret: "{{ENV_DEV_HLAMBDA_ADMIN_SECRET}}"
 `;
 
 export const packageJsonTemplate = `{

@@ -29,6 +29,7 @@ import addEnv from './commands/environment/add.js';
 import deleteEnv from './commands/environment/delete.js';
 import dockerSnippet from './commands/snippet/docker.js';
 import dockerComposeSnippet from './commands/snippet/docker-compose.js';
+import portainerInstallSnippet from './commands/snippet/portainer.js';
 import questionnaire from './commands/snippet/questionnaire.js';
 
 // Import package.json because we need to detect version from single source of truth.
@@ -106,6 +107,12 @@ const dockerComposeSnippetProgram = snippetProgram
   .alias('dc')
   .description('Shows docker compose snippet.')
   .action(dockerComposeSnippet);
+
+const portainerSnippetProgram = snippetProgram
+  .command('portainer')
+  .alias('p')
+  .description('Shows portainer snippet.')
+  .action(portainerInstallSnippet);
 
 const questionnaireProgram = snippetProgram
   .command('questionnaire')

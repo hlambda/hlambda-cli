@@ -1,6 +1,6 @@
 # hlambda-cli [![npm version](https://badge.fury.io/js/hlambda-cli.svg)](https://www.npmjs.com/package/hlambda-cli )
 
-hlambda-cli - CLI tool for managing hlambda server.
+hlambda-cli - CLI tool for managing Hlambda server.
 
 [![NPM](https://nodei.co/npm/hlambda-cli.png?downloads=true&downloadRank=true&stars=true)](https://npmjs.org/hlambda-cli )
 
@@ -10,6 +10,12 @@ hlambda-cli - CLI tool for managing hlambda server.
 ```bash
 $ npm install -g hlambda-cli
 ```
+
+This will add Hlambda CLI to your arsenal, now you can use `hl`, `hla` or `hlambda` to check if CLI is working as expected.
+
+````console
+$ hlambda
+````
 
 ## Example
 

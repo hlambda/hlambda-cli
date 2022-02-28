@@ -27,8 +27,10 @@ import {
 } from './commands/server.js';
 import addEnv from './commands/environment/add.js';
 import deleteEnv from './commands/environment/delete.js';
+import defaultEnv from './commands/environment/default.js';
 import dockerSnippet from './commands/snippet/docker.js';
 import dockerComposeSnippet from './commands/snippet/docker-compose.js';
+import questionnaire from './commands/snippet/questionnaire.js';
 
 // Import package.json because we need to detect version from single source of truth.
 // import * as pckg from './../package.json'; // As of 2020 --experimental-json-modules flag is needed
@@ -85,14 +87,20 @@ const snippetProgram = program.command('snippets').alias('snip').description('Ou
 const dockerSnippetProgram = snippetProgram
   .command('docker')
   .alias('d')
-  .description('Shows docker snippet')
+  .description('Shows docker snippet.')
   .action(dockerSnippet);
 
 const dockerComposeSnippetProgram = snippetProgram
   .command('docker-compose')
   .alias('dc')
-  .description('Shows docker compose snippet')
+  .description('Shows docker compose snippet.')
   .action(dockerComposeSnippet);
+
+const questionnaireProgram = snippetProgram
+  .command('questionnaire')
+  .alias('q')
+  .description('Opens snippet questionnaire.')
+  .action(questionnaire);
 
 // --- Env Program ---
 const environmentsProgram = program
@@ -104,6 +112,7 @@ const environmentsProgram = program
 const envAddProgram = environmentsProgram
   .command('add')
   .alias('a')
+  .argument('<env_name>', 'Environment name.')
   .description('Adds new environment.')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(addEnv);
@@ -111,9 +120,18 @@ const envAddProgram = environmentsProgram
 const envDeleteProgram = environmentsProgram
   .command('delete')
   .alias('d')
+  .argument('<env_name>', 'Environment name.')
   .description('Deletes new environment.')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(deleteEnv);
+
+const envDefaultProgram = environmentsProgram
+  .command('default')
+  .alias('def')
+  .argument('<env_name>', 'Environment name.')
+  .description('Sets environment as the default env.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .action(defaultEnv);
 
 // --- Update Program ---
 const checkForNewVersionProgram = program
@@ -134,6 +152,7 @@ const initProgram = program
   .alias('i')
   .description('Init configuration and metadata for the hlambda server.')
   .argument('<folder_name>', 'Folder name.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --clean', "Don't include demo app in initial metadata.")
   .option('-f, --force', 'Force re-init, it will write over the existing files.')
   .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
@@ -145,6 +164,7 @@ const configProgram = program
   .alias('c')
   .alias('conf')
   .description('Read or update configuration in the local config.yaml file.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(config);
 
@@ -152,6 +172,7 @@ const saveProgram = configProgram
   .command('save')
   .alias('s')
   .description('Update configuration in the local config.yaml.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-e, --endpoint <endpoint>', 'Endpoint, url for hlambda server.')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
@@ -161,6 +182,7 @@ const readProgram = configProgram
   .command('read')
   .alias('r')
   .description('Update configuration in the local config.yaml.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(config);
 
@@ -168,7 +190,8 @@ const readProgram = configProgram
 const consoleProgram = program
   .command('console')
   .alias('o')
-  .description('Opens browser to the hlambda console')
+  .description('Opens browser to the hlambda console.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   // .argument('<string>', 'admin secret')
   .action(startConsole);
@@ -178,12 +201,13 @@ const metadata = program
   .command('metadata')
   .alias('meta')
   .alias('m')
-  .description('Apply/Export/Clear/Reload metadata, your code and configurations');
+  .description('Apply / Export / Clear / Reload metadata, your code and configurations.');
 
 metadata
   .command('reload')
   .alias('r')
   .description('Reload existing metadata on the server')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverReload);
@@ -192,6 +216,7 @@ metadata
   .command('clear')
   .alias('c')
   .description('Clear existing metadata on the server')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--no-auto-reload', 'should metadata apply skip auto reload')
@@ -201,6 +226,7 @@ metadata
   .command('apply')
   .alias('a')
   .description('Apply metadata')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--no-auto-reload', 'should metadata apply skip auto reload')
@@ -210,6 +236,7 @@ metadata
   .command('export')
   .alias('e')
   .description('Export metadata')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(metadataExport);
@@ -220,6 +247,7 @@ serverProgram
   .command('logs')
   .alias('l')
   .description('Show server logs')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverGetLogs);
@@ -228,6 +256,7 @@ serverProgram
   .command('errors')
   .alias('e')
   .description('Show server errors')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverGetErrors);
@@ -236,6 +265,7 @@ serverProgram
   .command('constants')
   .alias('c')
   .description('Show server constants')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverGetConstants);
@@ -244,6 +274,7 @@ serverProgram
   .command('shell')
   .alias('s')
   .description('Show server constants')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverShell);
@@ -251,6 +282,7 @@ serverProgram
 const npmServerProgram = serverProgram
   .command('npm')
   .description('Run npm commands.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.');
 
@@ -258,6 +290,7 @@ npmServerProgram
   .command('install')
   .alias('i')
   .description('Run npm install. (Installing metadata dependency on the server)')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverNPMInstall);
@@ -270,6 +303,7 @@ const getCurlProgram = curlProgram
   .alias('g')
   .description('Makes GET request to the endpoint.')
   .argument('<route_path>', 'route_path')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
@@ -280,6 +314,7 @@ const postCurlProgram = curlProgram
   .alias('p')
   .description('Makes POST request to the endpoint.')
   .argument('<route_path>', 'route_path')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
@@ -289,6 +324,7 @@ const putCurlProgram = curlProgram
   .command('put')
   .description('Makes PUT request to the endpoint.')
   .argument('<route_path>', 'route_path')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
@@ -298,6 +334,7 @@ const deleteCurlProgram = curlProgram
   .command('delete')
   .description('Makes DELETE request to the endpoint.')
   .argument('<route_path>', 'route_path')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
@@ -307,6 +344,7 @@ const optionsCurlProgram = curlProgram
   .command('options')
   .description('Makes OPTIONS request to the endpoint.')
   .argument('<route_path>', 'route_path')
+  .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')

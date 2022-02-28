@@ -51,6 +51,7 @@
     "figlet": "^1.5.2",
     "formdata-node": "^4.3.2",
     "hlambda": "^0.0.4",
+    "inquirer": "^8.2.0",
     "node-fetch": "^3.2.0",
     "open": "^8.4.0",
     "rimraf": "^3.0.2",

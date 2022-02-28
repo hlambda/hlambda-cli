@@ -48,6 +48,10 @@ export const errors = {
     message: 'Configuration file is invalid, please check yaml syntax.',
     exitCode: 6,
   },
+  ERROR_ENV_ALREADY_EXISTS: {
+    message: 'Environment already exists!',
+    exitCode: 7,
+  },
   ERROR_DANGEROUS_SANITY_CHECK_DID_NOT_PASS: {
     message:
       'I think we have saved you from something bad... please report this incident. (Example: Process of deleting files received root dir/path)',

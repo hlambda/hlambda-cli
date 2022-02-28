@@ -4,6 +4,11 @@ metadata_directory: metadata
 #admin_secret: demo
 `;
 
+export const configEnvTemplate = `version: 1
+endpoint: http://localhost:8081
+admin_secret: {{ENVIRONMENT_ADMIN_SECRET}}
+`;
+
 export const packageJsonTemplate = `{
   "type": "module",
   "dependencies": {}

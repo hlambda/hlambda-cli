@@ -1,18 +1,18 @@
 Release 0.0.10
 
-- [Idea] Tests
+- [WIP] Tests
+- [WIP] Git sync options
+- [WIP] Shell command execution
 
 Release 0.0.9
 
 - Environments, and env management
 - Override values from yaml from .env using {{}} pattern
 - Snippets, used for quick installation
-
-- [WIP] Git sync options
-- ~~[WIP] Analytics~~ Replaced with feedback program (We belive in privacy by default)
-- [WIP] Check for new version and updates
-- [WIP] Optimize node_modules deployment, such that we can deploy app without zip-ing dependencies.
-- [WIP] Shell command execution
+- ~~ Analytics~~ Replaced with feedback program (We belive in privacy by default)
+- Optimize node_modules deployment, such that we can deploy app without zip-ing dependencies
+- Check for new version and updates
+- Shell command execution on metadata apply as post apply script
 
 Release 0.0.8
 

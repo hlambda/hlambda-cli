@@ -1,10 +1,6 @@
 import path from 'path';
-import fetch from 'node-fetch';
-
-import { errors } from './../../errors/index.js';
 
 import CLIErrorHandler from './../../utils/CLIErrorHandler.js';
-import { loadConfigFromYAML } from './../../utils/loadConfigFromYAML.js';
 
 import { dockerInstallSnippet } from './install-snippets.js';
 

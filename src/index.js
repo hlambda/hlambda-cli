@@ -31,6 +31,7 @@ import dockerSnippet from './commands/snippet/docker.js';
 import dockerComposeSnippet from './commands/snippet/docker-compose.js';
 import portainerInstallSnippet from './commands/snippet/portainer.js';
 import questionnaire from './commands/snippet/questionnaire.js';
+import leaveFeedback from './commands/feedback.js';
 
 // Import package.json because we need to detect version from single source of truth.
 // import * as pckg from './../package.json'; // As of 2020 --experimental-json-modules flag is needed
@@ -92,7 +93,7 @@ const initProgram = program
   .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
   .action(init);
 
-// --- Snippet Program ---
+// --- Snippet sub-program ---
 // Idea is to have quick snippets in CLI
 const snippetProgram = program.command('snippets').alias('snip').description('Output default or create new snippets.');
 
@@ -120,7 +121,7 @@ const questionnaireProgram = snippetProgram
   .description('Opens snippet questionnaire.')
   .action(questionnaire);
 
-// --- Env Program ---
+// --- Env sub-program ---
 const environmentsProgram = program
   .command('envrionments')
   .alias('env')
@@ -144,20 +145,20 @@ const envDeleteProgram = environmentsProgram
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(deleteEnv);
 
-// --- Update Program ---
+// --- Update sub-program ---
 const checkForNewVersionProgram = program
   .command('update')
   .alias('u')
   .description('Check if there is a new cli version.')
   .action(checkForNewVersion);
 
-const changeLogProgram = program
-  .command('news')
-  .alias('n')
-  .description('Output the change log. And any announcement from hlambda team.')
-  .action(checkWhatIsNewInCurrentVersion);
+// const changeLogProgram = program
+//   .command('news')
+//   .alias('n')
+//   .description('Output the change log. And any announcement from hlambda team.')
+//   .action(checkWhatIsNewInCurrentVersion);
 
-// Save/Configure sub-program
+// --- Save/Configure sub-program ---
 const configProgram = program
   .command('config')
   .alias('c')
@@ -185,7 +186,7 @@ const readProgram = configProgram
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(config);
 
-// Console sub-program
+// --- Console sub-program ---
 const consoleProgram = program
   .command('console')
   .alias('o')
@@ -195,7 +196,7 @@ const consoleProgram = program
   // .argument('<string>', 'admin secret')
   .action(startConsole);
 
-// Metadata sub-program
+// --- Metadata sub-program ---
 const metadata = program
   .command('metadata')
   .alias('meta')
@@ -205,7 +206,7 @@ const metadata = program
 metadata
   .command('reload')
   .alias('r')
-  .description('Reload existing metadata on the server')
+  .description('Reload existing metadata on the server.')
   .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
@@ -214,11 +215,11 @@ metadata
 metadata
   .command('clear')
   .alias('c')
-  .description('Clear existing metadata on the server')
+  .description('Clear existing metadata on the server.')
   .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
-  .option('--no-auto-reload', 'should metadata apply skip auto reload')
+  .option('--no-auto-reload', 'should metadata apply skip auto reload.')
   .action(serverClearMetadata);
 
 metadata
@@ -228,7 +229,7 @@ metadata
   .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
-  .option('--no-auto-reload', 'should metadata apply skip auto reload')
+  .option('--no-auto-reload', 'should metadata apply skip auto reload.')
   .action(metadataApply);
 
 metadata
@@ -240,12 +241,13 @@ metadata
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(metadataExport);
 
+// --- Server sub-program ---
 const serverProgram = program.command('server').alias('s').description('Do basic server request.');
 
 serverProgram
   .command('logs')
   .alias('l')
-  .description('Show server logs')
+  .description('Show server logs.')
   .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
@@ -254,7 +256,7 @@ serverProgram
 serverProgram
   .command('errors')
   .alias('e')
-  .description('Show server errors')
+  .description('Show server errors.')
   .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
@@ -263,7 +265,7 @@ serverProgram
 serverProgram
   .command('constants')
   .alias('c')
-  .description('Show server constants')
+  .description('Show server constants.')
   .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
@@ -272,7 +274,7 @@ serverProgram
 serverProgram
   .command('shell')
   .alias('s')
-  .description('Show server constants')
+  .description('Show server constants.')
   .option('-e, --env <env_name>', 'Select environment.', '')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
@@ -294,6 +296,7 @@ npmServerProgram
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverNPMInstall);
 
+// --- Request sub-program ---
 // We already have node-fetch why should we use curl :) ?
 const curlProgram = program.command('request').alias('r').description('Do basic requests.');
 
@@ -349,13 +352,15 @@ const optionsCurlProgram = curlProgram
   .option('--dry-run', 'Just write corresponding CURL command without actually triggering the request.')
   .action(requests('OPTIONS'));
 
+// --- Feedback sub-program ---
+
 const feedbackProgram = program
   .command('feedback')
-  .alias('f')
+  .alias('fb')
   .description('Leave feedback to the Hlambda team.')
-  .action(checkWhatIsNewInCurrentVersion);
+  .action(leaveFeedback);
 
-// Parsing args
+// --- Parsing args ---
 program.parse(process.argv);
 
 const options = program.opts();

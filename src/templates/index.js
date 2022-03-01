@@ -1,7 +1,24 @@
 export const configTemplate = `version: 1
 endpoint: http://localhost:8081
 metadata_directory: metadata
-#admin_secret: demo
+# admin_secret: demo
+
+# metadata_post_apply_script:
+#   - npm install --only=production
+
+# metadata_apply_ignore:
+#   - node_modules/
+#   - .git/
+
+# metadata_git_repository_sync_interval: ""
+# metadata_git_repository: ""
+# metadata_git_repository_access: ""
+
+`;
+
+export const configEnvTemplate = `version: 1
+endpoint: "{{ENV_DEV_HLAMBDA_ENDPOINT}}"
+admin_secret: "{{ENV_DEV_HLAMBDA_ADMIN_SECRET}}"
 `;
 
 export const packageJsonTemplate = `{

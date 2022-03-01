@@ -37,7 +37,8 @@ export const serverGetLogs = async (options, program) => {
       // Crazy but it works perfectly...
       console.log(`${JSON.parse(JSON.parse(await response.text())).join('\n')}`);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
+      throw new Error(errors.ERROR_WHILE_FETCHING_LOGS_FROM_SERVER);
     }
   })()
     .then(() => {})

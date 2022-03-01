@@ -101,9 +101,27 @@ export const metadataApply = async (options, program) => {
     const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
     const metadataDirectory = configuration?.metadata_directory ?? 'metadata';
 
+    const metadataApplyIgnoreList = configuration?.metadata_apply_ignore ?? [];
+    const metadataPostApplyCommandList = configuration?.metadata_post_apply_script ?? [];
+
+    if (metadataApplyIgnoreList.length > 0) {
+      console.log('Ignoring:'.yellow, metadataApplyIgnoreList.join(' , ').yellow);
+    }
+
     // ZIP the metadata
     const zip = new AdmZip();
-    zip.addLocalFolder(path.resolve(cwd, options.config, metadataDirectory));
+    zip.addLocalFolder(path.resolve(cwd, options.config, metadataDirectory), undefined, (filename) => {
+      for (let i = 0; i < metadataApplyIgnoreList.length; i += 1) {
+        const regex = new RegExp(metadataApplyIgnoreList[i], 'gm');
+        const t = filename.match(regex);
+        if (t) {
+          // console.log('n: ', filename);
+          return false;
+        }
+      }
+      // console.log('y: ', filename);
+      return true;
+    });
     console.log('Creating zip from the metadata'.yellow);
 
     // POST metadata to the API
@@ -140,6 +158,32 @@ export const metadataApply = async (options, program) => {
       console.log('Metadata applied!'.green);
     }
     console.log(response.status);
+
+    // Check if there are scripts to run after applying
+    const executeShellCommand = async (command) => {
+      const headers = {
+        'x-hlambda-admin-secret': adminSecret,
+      };
+      const response = await fetch(`${endpoint}/console/api/v1/command-request`, {
+        method: 'POST',
+        body: {
+          command,
+        },
+        headers,
+      });
+
+      if (response.status === 200) {
+        console.log(`Shell command`.green, `${command}`.red, `executed!`.green);
+      }
+      console.log(response.status);
+    };
+
+    if (metadataPostApplyCommandList.length > 0) {
+      for (let i = 0; i < metadataPostApplyCommandList.length; i += 1) {
+        // eslint-disable-next-line no-await-in-loop
+        await executeShellCommand(metadataPostApplyCommandList[i]);
+      }
+    }
 
     // This is magic from commander, the real flag was --no-auto-reload but we get positive logic transformation to autoReload
     if (options?.autoReload) {

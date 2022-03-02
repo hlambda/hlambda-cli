@@ -150,7 +150,7 @@ export const serverShell = async (options, program) => {
     let workingDirectory = cwdCommandResult?.cwd ?? './';
 
     const writePwdConsole = () => {
-      process.stdout.write(`<hlambda-server@${endpoint}> ${workingDirectory} # `);
+      process.stdout.write(`<${'hlambda-server'}@${endpoint}> ${workingDirectory} # `.yellow);
     };
     writePwdConsole();
 
@@ -160,14 +160,14 @@ export const serverShell = async (options, program) => {
     // const answer = await rl.question('What do you think of Node.js? ');
     // console.log(`Thank you for your valuable feedback: ${answer}`);
 
-    rl.on('line', async (input) => {
-      if (input === 'exit' || input === 'quit') {
+    rl.on('line', async (terminalInput) => {
+      if (terminalInput === 'exit' || terminalInput === 'quit') {
         rl.close();
         return;
       }
-      if (input.toLowerCase().startsWith('cd')) {
+      if (terminalInput.toLowerCase().startsWith('cd')) {
         // Change working dir for the command...
-        const t = input.match(/cd\s(.+)/);
+        const t = terminalInput.match(/cd\s(.+)/);
         const responseCd = await fetch(`${endpoint}/console/api/v1/command-change-dir`, {
           method: 'POST',
           headers: {
@@ -186,9 +186,9 @@ export const serverShell = async (options, program) => {
         writePwdConsole();
         return;
       }
-      const result = await executeShellCommand(input, workingDirectory);
+      const result = await executeShellCommand(terminalInput, workingDirectory);
       const data = await result.json();
-      console.log(data?.data);
+      process.stdout.write(data?.data);
       writePwdConsole();
     });
   })()

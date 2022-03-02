@@ -130,7 +130,8 @@ const questionnaireProgram = snippetProgram
   .alias('q')
   .description('Opens snippet questionnaire.')
   .option('-c, --clean', 'Clean command as output.')
-  .option('-r, --run', 'Run command instead of just outputting the command.')
+  // For now there is no need to execute directly the questionnaire, security concearn
+  // .option('-r, --run', 'Run command instead of just outputting the command.')
   .action(questionnaire);
 
 // --- Env sub-program ---
@@ -292,21 +293,21 @@ serverProgram
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverShell);
 
-const npmServerProgram = serverProgram
-  .command('npm')
-  .description('Run npm commands.')
-  .option('-e, --env <env_name>', 'Select environment.', '')
-  .option('-c, --config <path>', 'Path to config.yaml file.', '')
-  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.');
+// const npmServerProgram = serverProgram
+//   .command('npm')
+//   .description('Run npm commands.')
+//   .option('-e, --env <env_name>', 'Select environment.', '')
+//   .option('-c, --config <path>', 'Path to config.yaml file.', '')
+//   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.');
 
-npmServerProgram
-  .command('install')
-  .alias('i')
-  .description('Run npm install. (Installing metadata dependency on the server)')
-  .option('-e, --env <env_name>', 'Select environment.', '')
-  .option('-c, --config <path>', 'Path to config.yaml file.', '')
-  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
-  .action(serverNPMInstall);
+// npmServerProgram
+//   .command('install')
+//   .alias('i')
+//   .description('Run npm install. (Installing metadata dependency on the server)')
+//   .option('-e, --env <env_name>', 'Select environment.', '')
+//   .option('-c, --config <path>', 'Path to config.yaml file.', '')
+//   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+//   .action(serverNPMInstall);
 
 // --- Request sub-program ---
 // We already have node-fetch why should we use curl :) ?

@@ -32,6 +32,12 @@ Example output:
 docker run -d -p 8081:1331 --env HLAMBDA_ADMIN_SECRET=demo --name hlambda-server --restart=always -v hlambda_metadata:/usr/src/app/metadata hlambda/hlambda-core:latest
 ```
 
+You can even run it directly via additional flag --run
+
+````console
+$ hl snip docker --run
+````
+
 ## Examples
 
 ````console
@@ -42,7 +48,7 @@ $ hl
 $ hl --version
 ````
 
-
+## Quich start
 
 ````console
 $ hl init my-app
@@ -82,6 +88,20 @@ to export existing data from the hlambda server run
 
 ````console
 $ hlambda metadata export --admin-secret <your_secret>
+````
+
+# Env
+
+you can add custom environments and configurations:
+
+````console
+$ hl env add dev
+````
+
+or delete env configuration
+
+````console
+$ hl env delete dev
 ````
 
 ## Reloading metadata

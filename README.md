@@ -6,31 +6,50 @@ hlambda-cli - CLI tool for managing Hlambda server.
 
 ## Installation
 
-### npm
 ```bash
 $ npm install -g hlambda-cli
 ```
 
-This will add Hlambda CLI to your arsenal, now you can use `hl`, `hla` or `hlambda` to check if CLI is working as expected.
+This will add Hlambda CLI to your arsenal, now you can use `hl`, `hla` or `hlambda`.
+
+To check if CLI is working as expected.
 
 ````console
-$ hlambda
+$ hl
 ````
 
-## Example
+## Installing Hlambda server
 
-First you will need to get hlambda server running, either in docker or locally.
+You can get the snippet for running Hlambda docker image directly from the CLI
 
 ````console
-$ hlambda --version
+$ hl snippets docker
+````
+
+Example output:
+
+```
+docker run -d -p 8081:1331 --env HLAMBDA_ADMIN_SECRET=demo --name hlambda-server --restart=always -v hlambda_metadata:/usr/src/app/metadata hlambda/hlambda-core:latest
+```
+
+## Examples
+
+````console
+$ hl
 ````
 
 ````console
-$ hlambda init my-first-hlambda-app
+$ hl --version
+````
+
+
+
+````console
+$ hl init my-app
 ````
 
 ````console
-$ cd my-first-hlambda-app
+$ cd my-app
 ````
 
 Change the admin_secret in the config.yaml manually or just run

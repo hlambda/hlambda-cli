@@ -1,10 +1,7 @@
 import path from 'path';
-import fetch from 'node-fetch';
-
-import { errors } from './../../errors/index.js';
+import { exec } from 'child_process';
 
 import CLIErrorHandler from './../../utils/CLIErrorHandler.js';
-import { loadConfigFromYAML } from './../../utils/loadConfigFromYAML.js';
 
 import { portainerInstallSnippet } from './install-snippets.js';
 
@@ -13,7 +10,26 @@ export const portainerSnippet = async (options, program) => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
-    console.log(portainerInstallSnippet.yellow);
+    if (options.run) {
+      const command = portainerInstallSnippet(true);
+      const childPid = exec(command);
+
+      childPid.stdout.on('data', (data) => {
+        console.log(`${data.toString()}`);
+      });
+
+      childPid.stderr.on('data', (data) => {
+        console.log(`${data.toString()}`);
+      });
+
+      childPid.on('exit', (code) => {
+        console.log(`Process exited with code ${code.toString()}`);
+      });
+    } else if (options.clean) {
+      console.log(portainerInstallSnippet(true));
+    } else {
+      console.log(portainerInstallSnippet().yellow);
+    }
   })()
     .then(() => {})
     .catch(CLIErrorHandler(program));

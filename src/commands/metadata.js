@@ -11,6 +11,7 @@ import { errors } from './../errors/index.js';
 
 import CLIErrorHandler from './../utils/CLIErrorHandler.js';
 import { loadConfigFromYAML } from './../utils/loadConfigFromYAML.js';
+import executeShellCommandClass from './../utils/executeShellCommandClass.js';
 
 export const serverReload = async (options, program) => {
   await (async () => {
@@ -159,25 +160,9 @@ export const metadataApply = async (options, program) => {
     }
     console.log(response.status);
 
+    const executeShellCommand = executeShellCommandClass(adminSecret, endpoint);
+
     // Check if there are scripts to run after applying
-    const executeShellCommand = async (command) => {
-      const headers = {
-        'x-hlambda-admin-secret': adminSecret,
-      };
-      const response = await fetch(`${endpoint}/console/api/v1/command-request`, {
-        method: 'POST',
-        body: {
-          command,
-        },
-        headers,
-      });
-
-      if (response.status === 200) {
-        console.log(`Shell command`.green, `${command}`.red, `executed!`.green);
-      }
-      console.log(response.status);
-    };
-
     if (metadataPostApplyCommandList.length > 0) {
       for (let i = 0; i < metadataPostApplyCommandList.length; i += 1) {
         // eslint-disable-next-line no-await-in-loop

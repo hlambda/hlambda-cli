@@ -1,10 +1,9 @@
-Release 0.0.10
+# Release 0.0.10
 
-- [WIP] Tests
-- [WIP] Git sync options
-- [WIP] Shell command execution
+- Tests
+- Shell command execution
 
-Release 0.0.9
+# Release 0.0.9
 
 - Environments, and env management
 - Override values from yaml from .env using {{}} pattern
@@ -14,7 +13,7 @@ Release 0.0.9
 - Check for new version and updates
 - Shell command execution on metadata apply as post apply script
 
-Release 0.0.8
+# Release 0.0.8
 
 - New initialization template
 - Init command flags, force and force-remove

@@ -95,30 +95,43 @@ const initProgram = program
 
 // --- Snippet sub-program ---
 // Idea is to have quick snippets in CLI
-const snippetProgram = program.command('snippets').alias('snip').description('Output default or create new snippets.');
+const snippetProgram = program
+  .command('snippets')
+  .alias('snip')
+  .alias('snippet')
+  .description('Output default or create new snippets.');
 
 const dockerSnippetProgram = snippetProgram
   .command('docker')
   .alias('d')
   .description('Shows docker snippet.')
+  .option('-c, --clean', 'Clean command as output.')
+  .option('-r, --run', 'Run command instead of just outputting the command.')
   .action(dockerSnippet);
 
 const dockerComposeSnippetProgram = snippetProgram
   .command('docker-compose')
   .alias('dc')
   .description('Shows docker compose snippet.')
+  .option('-c, --clean', 'Clean command as output.')
+  .option('-r, --run', 'Run command instead of just outputting the command.')
   .action(dockerComposeSnippet);
 
 const portainerSnippetProgram = snippetProgram
   .command('portainer')
   .alias('p')
   .description('Shows portainer snippet.')
+  .option('-c, --clean', 'Clean command as output.')
+  .option('-r, --run', 'Run command instead of just outputting the command.')
   .action(portainerInstallSnippet);
 
 const questionnaireProgram = snippetProgram
   .command('questionnaire')
   .alias('q')
   .description('Opens snippet questionnaire.')
+  .option('-c, --clean', 'Clean command as output.')
+  // For now there is no need to execute directly the questionnaire, security concearn
+  // .option('-r, --run', 'Run command instead of just outputting the command.')
   .action(questionnaire);
 
 // --- Env sub-program ---
@@ -280,21 +293,21 @@ serverProgram
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverShell);
 
-const npmServerProgram = serverProgram
-  .command('npm')
-  .description('Run npm commands.')
-  .option('-e, --env <env_name>', 'Select environment.', '')
-  .option('-c, --config <path>', 'Path to config.yaml file.', '')
-  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.');
+// const npmServerProgram = serverProgram
+//   .command('npm')
+//   .description('Run npm commands.')
+//   .option('-e, --env <env_name>', 'Select environment.', '')
+//   .option('-c, --config <path>', 'Path to config.yaml file.', '')
+//   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.');
 
-npmServerProgram
-  .command('install')
-  .alias('i')
-  .description('Run npm install. (Installing metadata dependency on the server)')
-  .option('-e, --env <env_name>', 'Select environment.', '')
-  .option('-c, --config <path>', 'Path to config.yaml file.', '')
-  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
-  .action(serverNPMInstall);
+// npmServerProgram
+//   .command('install')
+//   .alias('i')
+//   .description('Run npm install. (Installing metadata dependency on the server)')
+//   .option('-e, --env <env_name>', 'Select environment.', '')
+//   .option('-c, --config <path>', 'Path to config.yaml file.', '')
+//   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+//   .action(serverNPMInstall);
 
 // --- Request sub-program ---
 // We already have node-fetch why should we use curl :) ?

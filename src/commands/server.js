@@ -1,12 +1,15 @@
 import path from 'path';
 import fetch from 'node-fetch';
-// import FormData from 'form-data';
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+
 import { FormData, File } from 'formdata-node';
 
 import { errors } from './../errors/index.js';
 
 import CLIErrorHandler from './../utils/CLIErrorHandler.js';
 import { loadConfigFromYAML } from './../utils/loadConfigFromYAML.js';
+import executeShellCommandClass from './../utils/executeShellCommandClass.js';
 
 export const serverGetLogs = async (options, program) => {
   await (async () => {
@@ -126,8 +129,68 @@ export const serverShell = async (options, program) => {
     const endpoint = configuration?.endpoint ?? 'http://localhost:8081';
     const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
 
-    // TODO: Implement this
-    throw new Error(errors.FUNCTIONALITY_NOT_IMPLEMENTED);
+    const headers = {
+      'x-hlambda-admin-secret': adminSecret,
+    };
+    const response = await fetch(`${endpoint}/console/api/v1/command-cwd`, {
+      method: 'GET',
+      headers,
+    });
+
+    if (response.status === 200) {
+      console.log('Connection valid!'.green);
+    } else {
+      throw new Error(errors.ERROR_INVALID_HLAMBDA_ADMIN_SECRET);
+    }
+    console.log(response.status);
+    const cwdCommandResult = await response.json();
+
+    const executeShellCommand = executeShellCommandClass(adminSecret, endpoint, true);
+
+    let workingDirectory = cwdCommandResult?.cwd ?? './';
+
+    const writePwdConsole = () => {
+      process.stdout.write(`<${'hlambda-server'}@${endpoint}> ${workingDirectory} # `.yellow);
+    };
+    writePwdConsole();
+
+    // Register linebyline listener
+    const rl = readline.createInterface({ input, output });
+
+    // const answer = await rl.question('What do you think of Node.js? ');
+    // console.log(`Thank you for your valuable feedback: ${answer}`);
+
+    rl.on('line', async (terminalInput) => {
+      if (terminalInput === 'exit' || terminalInput === 'quit') {
+        rl.close();
+        return;
+      }
+      if (terminalInput.toLowerCase().startsWith('cd')) {
+        // Change working dir for the command...
+        const t = terminalInput.match(/cd\s(.+)/);
+        const responseCd = await fetch(`${endpoint}/console/api/v1/command-change-dir`, {
+          method: 'POST',
+          headers: {
+            'x-hlambda-admin-secret': adminSecret,
+            Accept: 'application/json',
+            'Content-Type': 'application/json', // Important
+          },
+          body: JSON.stringify({
+            path: t[1],
+          }),
+        });
+        const responseJson = await responseCd.json();
+        const outputString = responseJson;
+        // console.log(outputString);
+        workingDirectory = outputString?.cwd;
+        writePwdConsole();
+        return;
+      }
+      const result = await executeShellCommand(terminalInput, workingDirectory);
+      const data = await result.json();
+      process.stdout.write(data?.data);
+      writePwdConsole();
+    });
   })()
     .then(() => {})
     .catch(CLIErrorHandler(program));

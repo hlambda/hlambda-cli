@@ -1,7 +1,3 @@
-# [WIP] Release 0.0.11
-
-- [WIP] Git sync options
-
 # Release 0.0.10
 
 - Tests

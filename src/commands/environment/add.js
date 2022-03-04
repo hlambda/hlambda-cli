@@ -67,7 +67,7 @@ export const addEnv = async (envName, options, program) => {
         console.log(`Create folder failed`.red);
       });
 
-    await writeFile(`${initEnvFilePath}/config.yaml`, configEnvTemplate, 'utf-8')
+    await writeFile(`${initEnvFilePath}/config.yaml`, configEnvTemplate(envName), 'utf-8')
       .then(() => {
         // console.log(`File write ${initEnvFilePath}/config.yaml successfull!`.green);
       })

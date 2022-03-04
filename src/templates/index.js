@@ -16,10 +16,18 @@ metadata_directory: metadata
 
 `;
 
-export const configEnvTemplate = `version: 1
-endpoint: "{{ENV_DEV_HLAMBDA_ENDPOINT}}"
-admin_secret: "{{ENV_DEV_HLAMBDA_ADMIN_SECRET}}"
+export const rootDotenvTemplate = `
 `;
+
+export const rootGitIgnoreTemplate = `.env
+`;
+
+export const configEnvTemplate = (envName) => {
+  return `version: 1
+endpoint: "{{ENV_${`${envName}`.toUpperCase()}_HLAMBDA_ENDPOINT}}"
+admin_secret: "{{ENV_${`${envName}`.toUpperCase()}_HLAMBDA_ADMIN_SECRET}}"
+`;
+};
 
 export const packageJsonTemplate = `{
   "type": "module",

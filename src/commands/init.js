@@ -11,6 +11,8 @@ import {
   errorTemplate,
   hlambdaYamlTemplate,
   hlambdaREADMETemplate,
+  rootGitIgnoreTemplate,
+  rootDotenvTemplate,
 } from './../templates/index.js';
 
 import CLIErrorHandler from './../utils/CLIErrorHandler.js';
@@ -88,6 +90,22 @@ export const init = async (dirName, options, program) => {
       })
       .catch(() => {
         console.log(`File write ${`./${dirName}/config.yaml`} failed`.red);
+      });
+
+    await writeFile(`./${dirName}/.gitignore`, rootGitIgnoreTemplate, 'utf-8')
+      .then(() => {
+        // console.log(`File write ${`./${dirName}/.gitignore`} successfull!`.green);
+      })
+      .catch(() => {
+        console.log(`File write ${`./${dirName}/.gitignore`} failed`.red);
+      });
+
+    await writeFile(`./${dirName}/.env`, rootDotenvTemplate, 'utf-8')
+      .then(() => {
+        // console.log(`File write ${`./${dirName}/.env`} successfull!`.green);
+      })
+      .catch(() => {
+        console.log(`File write ${`./${dirName}/.env`} failed`.red);
       });
 
     if (includeDemoApp) {

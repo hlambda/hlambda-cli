@@ -1,7 +1,7 @@
 import path from 'path';
 import fetch from 'node-fetch';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
+import * as readline from 'readline';
+import { stdin as input, stdout as output } from 'process';
 
 import { FormData, File } from 'formdata-node';
 
@@ -161,8 +161,9 @@ export const serverShell = async (options, program) => {
     // console.log(`Thank you for your valuable feedback: ${answer}`);
 
     rl.on('line', async (terminalInput) => {
-      if (terminalInput === 'exit' || terminalInput === 'quit') {
+      if (terminalInput.toLowerCase() === 'exit' || terminalInput.toLowerCase() === 'quit') {
         rl.close();
+        process.exit(0);
         return;
       }
       if (terminalInput.toLowerCase().startsWith('cd')) {

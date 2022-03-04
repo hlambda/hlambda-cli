@@ -1,3 +1,10 @@
+# Release 0.0.11
+
+- Bugfix for Node LTS version, ERR_UNKNOWN_BUILTIN_MODULE
+- Update github actions & npm publish
+- Improve init template, add .gitignore, .env
+- Improve creation of the env variables for new environments
+
 # Release 0.0.10
 
 - Tests

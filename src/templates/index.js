@@ -20,8 +20,8 @@ admin_secret: "{{ENV_LOCAL_HLAMBDA_ADMIN_SECRET}}"
 `;
 
 export const rootDotenvTemplate = `# Remove "#" to uncomment the env values.
-# ENV_LOCAL_HLAMBDA_ENDPOINT="http://localhost:8081"
-# ENV_LOCAL_HLAMBDA_ADMIN_SECRET="demo"
+ENV_LOCAL_HLAMBDA_ENDPOINT="http://localhost:8081"
+ENV_LOCAL_HLAMBDA_ADMIN_SECRET="demo"
 
 # ENV_DEV_HLAMBDA_ENDPOINT="http://dev-server:8081"
 # ENV_DEV_HLAMBDA_ADMIN_SECRET="demo-dev"

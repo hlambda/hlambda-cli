@@ -1,6 +1,9 @@
 export const configTemplate = `version: 1
-endpoint: http://localhost:8081
 metadata_directory: metadata
+endpoint: "{{ENV_LOCAL_HLAMBDA_ENDPOINT}}"
+admin_secret: "{{ENV_LOCAL_HLAMBDA_ADMIN_SECRET}}"
+
+# endpoint: "http://localhost:8081"
 # admin_secret: demo
 
 # metadata_post_apply_script:
@@ -16,7 +19,12 @@ metadata_directory: metadata
 
 `;
 
-export const rootDotenvTemplate = `
+export const rootDotenvTemplate = `# Remove "#" to uncomment the env values.
+# ENV_LOCAL_HLAMBDA_ENDPOINT="http://localhost:8081"
+# ENV_LOCAL_HLAMBDA_ADMIN_SECRET="demo"
+
+# ENV_DEV_HLAMBDA_ENDPOINT="http://dev-server:8081"
+# ENV_DEV_HLAMBDA_ADMIN_SECRET="demo-dev"
 `;
 
 export const rootGitIgnoreTemplate = `.env

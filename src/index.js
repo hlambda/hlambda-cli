@@ -16,7 +16,7 @@ import { config } from './commands/config.js';
 import { save } from './commands/save.js';
 import { requests } from './commands/requests.js';
 import { startConsole } from './commands/console.js';
-import { serverReload, serverClearMetadata, metadataApply, metadataExport } from './commands/metadata.js';
+import { serverReload, serverClearMetadata, metadataApply, metadataExport, metadataSync } from './commands/metadata.js';
 import { checkForNewVersion, checkWhatIsNewInCurrentVersion } from './commands/update.js';
 import {
   serverGetLogs,
@@ -253,6 +253,16 @@ metadata
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(metadataExport);
+
+metadata
+  .command('sync')
+  .alias('s')
+  .description('Sync metadata from the remote repository.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .option('--no-auto-reload', 'should metadata apply skip auto reload.')
+  .action(metadataSync);
 
 // --- Server sub-program ---
 const serverProgram = program.command('server').alias('s').description('Do basic server request.');

@@ -7,17 +7,29 @@ import { errors } from './../errors/index.js';
 
 const replaceValueWithProcessEnv = (_newConf, key) => {
   const strValue = _newConf?.[key] ?? '';
+
   const tSecret = strValue.match(/^{{(.+)}}$/m);
+  const tempOne = {};
   if (tSecret) {
     console.log(`Override value for key: ${key} with value from process.env[${tSecret[1]}]`.yellow);
-    const temp = {};
-    temp[key] = process.env?.[tSecret[1]] ?? '';
-    return {
-      ..._newConf,
-      ...temp,
-    };
+    tempOne[key] = process.env?.[tSecret[1]] ?? '';
   }
-  return _newConf;
+
+  // Idea to have namespacing for replacing values from different scopes.
+  // Example; env.ENV_VARIABLE_VALUE, but for now it is good as is.
+
+  // const tSecretEnv = strValue.match(/^{{env\.(.+)}}$/m);
+  // const tempTwo = {};
+  // if (tSecretEnv) {
+  //   console.log(`Override value for key: env.${key} with value from process.env[${tSecretEnv[1]}]`.yellow);
+  //   tempTwo[key] = process.env?.[tSecretEnv[1]] ?? '';
+  // }
+
+  return {
+    ..._newConf,
+    ...tempOne,
+    // ...tempTwo,
+  };
 };
 
 export const loadConfigFromYAML = async (options) => {

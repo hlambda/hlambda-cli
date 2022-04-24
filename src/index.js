@@ -27,6 +27,7 @@ import {
 } from './commands/server.js';
 import addEnv from './commands/environment/add.js';
 import deleteEnv from './commands/environment/delete.js';
+import defaultEnv from './commands/environment/default.js';
 import dockerSnippet from './commands/snippet/docker.js';
 import dockerComposeSnippet from './commands/snippet/docker-compose.js';
 import portainerInstallSnippet from './commands/snippet/portainer.js';
@@ -157,6 +158,14 @@ const envDeleteProgram = environmentsProgram
   .description('Deletes new environment.')
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(deleteEnv);
+
+const envSetDefaultEnvironment = environmentsProgram
+  .command('default')
+  .alias('def')
+  .argument('<env_name>', 'Environment name.')
+  .description('Sets existing environment as default, this can also be done manually by updating .env file.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .action(defaultEnv);
 
 // --- Update sub-program ---
 const checkForNewVersionProgram = program

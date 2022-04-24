@@ -1,7 +1,7 @@
 {
   "name": "hlambda-cli",
   "type": "module",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "CLI for hlambda server.",
   "main": "src/index.js",
   "bin": {
@@ -48,6 +48,7 @@
     "colors": "^1.4.0",
     "commander": "^9.0.0",
     "dotenv": "^16.0.0",
+    "edit-dotenv": "^1.0.4",
     "figlet": "^1.5.2",
     "formdata-node": "^4.3.2",
     "hlambda": "^0.0.4",

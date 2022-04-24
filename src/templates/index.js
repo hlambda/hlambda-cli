@@ -25,6 +25,8 @@ ENV_LOCAL_HLAMBDA_ADMIN_SECRET="demo"
 
 # ENV_DEV_HLAMBDA_ENDPOINT="http://dev-server:8081"
 # ENV_DEV_HLAMBDA_ADMIN_SECRET="demo-dev"
+
+# ENV_DEFAULT_ENVIRONMENT="local"
 `;
 
 export const rootGitIgnoreTemplate = `.env

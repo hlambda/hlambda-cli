@@ -6,12 +6,12 @@ admin_secret: "{{ENV_LOCAL_HLAMBDA_ADMIN_SECRET}}"
 # endpoint: "http://localhost:8081"
 # admin_secret: demo
 
-# metadata_post_apply_script:
-#   - npm install --only=production
+metadata_post_apply_script:
+  - npm install --only=production
 
-# metadata_apply_ignore:
-#   - node_modules/
-#   - .git/
+metadata_apply_ignore:
+  - node_modules/
+  - .git/
 
 # metadata_git_repository_sync_interval: ""
 # metadata_git_repository: ""

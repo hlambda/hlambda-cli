@@ -12,6 +12,7 @@ import figlet from 'figlet';
 
 // Load the sub-commands
 import { init } from './commands/init.js';
+import { status } from './commands/status.js';
 import { config } from './commands/config.js';
 import { save } from './commands/save.js';
 import { requests } from './commands/requests.js';
@@ -93,6 +94,16 @@ const initProgram = program
   .option('-f, --force', 'Force re-init, it will write over the existing files.')
   .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
   .action(init);
+
+// --- Initialization sub-program ---
+const statusProgram = program
+  .command('status')
+  .alias('st')
+  .description('Get status of the Hlambda CLI in the current working directory.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-u, --unsafe', 'Do not mask admin secret, output without masking secrets.', '')
+  .action(status);
 
 // --- Snippet sub-program ---
 // Idea is to have quick snippets in CLI

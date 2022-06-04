@@ -29,6 +29,7 @@ import {
 import addEnv from './commands/environment/add.js';
 import deleteEnv from './commands/environment/delete.js';
 import defaultEnv from './commands/environment/default.js';
+import createNewSnippetCodeFile from './commands/snippet/newCodeFile.js';
 import dockerSnippet from './commands/snippet/docker.js';
 import dockerComposeSnippet from './commands/snippet/docker-compose.js';
 import portainerInstallSnippet from './commands/snippet/portainer.js';
@@ -109,9 +110,45 @@ const statusProgram = program
 // Idea is to have quick snippets in CLI
 const snippetProgram = program
   .command('snippets')
+  .alias('sn')
   .alias('snip')
   .alias('snippet')
   .description('Output default or create new snippets.');
+
+const javascriptRouter = snippetProgram
+  .command('javascript-router')
+  .alias('jsr')
+  .alias('r')
+  .argument('<name>', 'Snippet name. Example: `demo` will create file `router.demo.js` ')
+  .option('-p, --path <router_path>', 'Router path', '')
+  .option('-t, --type <get|post|put|delete|all>', 'Router type', 'get')
+  .option('-f, --force', 'Force file creation, it will write over the existing files.')
+  .description('Creates new JS router template')
+  .action(createNewSnippetCodeFile('jsr'));
+
+const javascriptEntrypoint = snippetProgram
+  .command('javascript-entrypoint')
+  .alias('jse')
+  .alias('e')
+  .argument('<name>', 'Snippet name. Example: `demo` will create file `entrypoint.demo.js` ')
+  .option('-f, --force', 'Force file creation, it will write over the existing files.')
+  .description('Creates new JS router template')
+  .action(createNewSnippetCodeFile('jse'));
+
+// Maybe support in the future.
+// const typescriptRouter = snippetProgram
+//   .command('typescript-router')
+//   .alias('tsr')
+//   .argument('<name>', 'Snippet name. Example: `demo` will create file `router.demo.ts` ')
+//   .description('Creates new TS router template')
+//   .action(createNewSnippetCodeFile('tsr'));
+
+// const typescriptEntrypoint = snippetProgram
+//   .command('typescript-entrypoint')
+//   .alias('tse')
+//   .argument('<name>', 'Snippet name. Example: `demo` will create file `entry.demo.ts` ')
+//   .description('Creates new TS router template')
+//   .action(createNewSnippetCodeFile('tse'));
 
 const dockerSnippetProgram = snippetProgram
   .command('docker')

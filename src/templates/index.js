@@ -41,7 +41,11 @@ admin_secret: "{{ENV_${`${envName}`.toUpperCase()}_HLAMBDA_ADMIN_SECRET}}"
 
 export const packageJsonTemplate = `{
   "type": "module",
-  "dependencies": {}
+  "dependencies": {
+    "express": "latest",
+    "express-async-handler": "latest",
+    "hlambda": "latest"
+  }
 }
 `;
 
@@ -110,10 +114,10 @@ envForce: # Totally dangerous but really really useful (I really hope you are aw
   HASURA_GRAPHQL_ADMIN_SECRET: "IWillForceThisValue"
 `;
 
-export const hlambdaREADMETemplate = `# Hlambda
+export const hlambdaREADMETemplate = `# Hlambda (Hyper Lambda)
 
-This is your folder containing all the metadata needed for the app to run in Hlambda server.
+This is your folder containing all the metadata needed for the app to run in the Hlambda server.
 
-Please read more about on https://hlambda.io
+Please read more about it on https://hlambda.io
 
 `;

@@ -1,5 +1,7 @@
 # Release 0.0.13
 
+- Ability to create new template files, for creating new routes by the best practices
+- Add support for entry point files, that do not export default router.
 - Ability to set default environment, useful for local development when running commands. (This is not the same as the default that you can set in config.yaml, this can be env specific, thus .env should contain that info)
 - Update docs
 - Fix security issues via npm audit

@@ -12,6 +12,7 @@ import figlet from 'figlet';
 
 // Load the sub-commands
 import { init } from './commands/init.js';
+import { clone } from './commands/clone.js';
 import { status } from './commands/status.js';
 import { config } from './commands/config.js';
 import { save } from './commands/save.js';
@@ -95,6 +96,20 @@ const initProgram = program
   .option('-f, --force', 'Force re-init, it will write over the existing files.')
   .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
   .action(init);
+
+// --- Initialization sub-program ---
+const cloneProgram = program
+  .command('clone')
+  .alias('c')
+  .description('Clone configuration and metadata from the existing hlambda server.')
+  .argument('<folder_name>', 'Folder name.')
+  .argument('<url>', 'Hlambda server location.')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
+  .option('-c, --clean', "Don't include demo app in initial metadata.")
+  .option('-f, --force', 'Force re-init, it will write over the existing files.')
+  .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
+  .action(clone);
 
 // --- Initialization sub-program ---
 const statusProgram = program

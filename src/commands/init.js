@@ -17,7 +17,7 @@ import {
 
 import CLIErrorHandler from './../utils/CLIErrorHandler.js';
 
-export const init = async (dirName, options, program) => {
+export const init = async (dirName, options, program, silent = false) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:'.green, `${cwd}`.yellow);
@@ -166,10 +166,12 @@ export const init = async (dirName, options, program) => {
         });
     }
 
-    console.log(
-      `Directory created. Execute the following commands to continue:`.green,
-      `\n\n  ${'cd'.green} ${dirName}\n  ${'hlambda'.green} console\n`
-    );
+    if (!silent) {
+      console.log(
+        `Directory created. Execute the following commands to continue:`.green,
+        `\n\n  ${'cd'.green} ${dirName}\n  ${'hlambda'.green} console\n`
+      );
+    }
   })()
     .then(() => {})
     .catch(CLIErrorHandler(program));

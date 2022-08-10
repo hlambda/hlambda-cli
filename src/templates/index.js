@@ -12,6 +12,8 @@ metadata_post_apply_script:
 metadata_apply_ignore:
   - node_modules/
   - .git/
+  - .vscode/
+  - .DS_Store
 
 # metadata_git_repository_sync_interval: ""
 # metadata_git_repository: ""
@@ -30,6 +32,9 @@ ENV_LOCAL_HLAMBDA_ADMIN_SECRET="demo"
 `;
 
 export const rootGitIgnoreTemplate = `.env
+
+# Mac
+.DS_Store
 `;
 
 export const configEnvTemplate = (envName) => {

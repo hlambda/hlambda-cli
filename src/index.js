@@ -18,7 +18,14 @@ import { config } from './commands/config.js';
 import { save } from './commands/save.js';
 import { requests } from './commands/requests.js';
 import { startConsole } from './commands/console.js';
-import { serverReload, serverClearMetadata, metadataApply, metadataExport, metadataSync } from './commands/metadata.js';
+import {
+  serverReload,
+  serverResetMetadata,
+  serverClearMetadata,
+  metadataApply,
+  metadataExport,
+  metadataSync,
+} from './commands/metadata.js';
 import { checkForNewVersion, checkWhatIsNewInCurrentVersion } from './commands/update.js';
 import {
   serverGetLogs,
@@ -286,7 +293,7 @@ const metadata = program
   .command('metadata')
   .alias('meta')
   .alias('m')
-  .description('Apply / Export / Clear / Reload metadata, your code and configurations.');
+  .description('Apply / Export / Clear / Reload / Reset metadata, your code and configurations.');
 
 metadata
   .command('reload')
@@ -296,6 +303,15 @@ metadata
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverReload);
+
+metadata
+  .command('reset')
+  .alias('res')
+  .description('Reset existing metadata on the server. (Warning: Similar to clear!)')
+  .option('-e, --env <env_name>', 'Select environment.', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .action(serverResetMetadata);
 
 metadata
   .command('clear')

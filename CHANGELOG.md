@@ -5,6 +5,8 @@
 - Ability to set default environment, useful for local development when running commands. (This is not the same as the default that you can set in config.yaml, this can be env specific, thus .env should contain that info)
 - Update docs
 - Fix security issues via npm audit
+- Ability to run server metadata reset
+- Clone command
 
 # Release 0.0.12
 

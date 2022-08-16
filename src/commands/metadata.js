@@ -42,6 +42,52 @@ export const serverReload = async (options, program) => {
     .catch(CLIErrorHandler(program));
 };
 
+export const serverResetMetadata = async (options, program) => {
+  await (async () => {
+    const cwd = path.resolve(process.cwd());
+    console.log('Executing in cwd:'.green, `${cwd}`.yellow);
+
+    // Load yaml configuration
+    const configuration = await loadConfigFromYAML(options);
+
+    const endpoint = configuration?.endpoint ?? 'http://localhost:8081';
+    const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
+
+    const headers = {
+      'x-hlambda-admin-secret': adminSecret,
+    };
+    const response = await fetch(`${endpoint}/console/api/v1/metadata/reset`, {
+      method: 'GET',
+      // body: formData,
+      headers,
+    });
+
+    if (response.status === 200) {
+      console.log('Metadata reset!'.green);
+    }
+    console.log(response.status);
+
+    if (response.status !== 200) {
+      throw new Error(errors.ERROR_INVALID_HLAMBDA_ADMIN_SECRET);
+    }
+
+    // This is magic from commander, the real flag was --no-auto-reload but we get positive logic transformation to autoReload
+    if (options?.autoReload) {
+      const responseRestart = await fetch(`${endpoint}/console/api/v1/trigger-restart`, {
+        method: 'GET',
+        // body: formData,
+        headers,
+      });
+      if (responseRestart.status === 200) {
+        console.log('Metadata reloaded after clearing!'.green);
+      }
+      console.log(responseRestart.status);
+    }
+  })()
+    .then(() => {})
+    .catch(CLIErrorHandler(program));
+};
+
 export const serverClearMetadata = async (options, program) => {
   await (async () => {
     const cwd = path.resolve(process.cwd());

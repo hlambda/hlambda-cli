@@ -6,12 +6,14 @@ admin_secret: "{{ENV_LOCAL_HLAMBDA_ADMIN_SECRET}}"
 # endpoint: "http://localhost:8081"
 # admin_secret: demo
 
-# metadata_post_apply_script:
-#   - npm install --only=production
+metadata_post_apply_script:
+  - npm install --only=production
 
-# metadata_apply_ignore:
-#   - node_modules/
-#   - .git/
+metadata_apply_ignore:
+  - node_modules/
+  - .git/
+  - .vscode/
+  - .DS_Store
 
 # metadata_git_repository_sync_interval: ""
 # metadata_git_repository: ""
@@ -25,9 +27,14 @@ ENV_LOCAL_HLAMBDA_ADMIN_SECRET="demo"
 
 # ENV_DEV_HLAMBDA_ENDPOINT="http://dev-server:8081"
 # ENV_DEV_HLAMBDA_ADMIN_SECRET="demo-dev"
+
+# ENV_DEFAULT_ENVIRONMENT="local"
 `;
 
 export const rootGitIgnoreTemplate = `.env
+
+# Mac
+.DS_Store
 `;
 
 export const configEnvTemplate = (envName) => {
@@ -39,7 +46,11 @@ admin_secret: "{{ENV_${`${envName}`.toUpperCase()}_HLAMBDA_ADMIN_SECRET}}"
 
 export const packageJsonTemplate = `{
   "type": "module",
-  "dependencies": {}
+  "dependencies": {
+    "express": "latest",
+    "express-async-handler": "latest",
+    "hlambda": "latest"
+  }
 }
 `;
 
@@ -108,10 +119,10 @@ envForce: # Totally dangerous but really really useful (I really hope you are aw
   HASURA_GRAPHQL_ADMIN_SECRET: "IWillForceThisValue"
 `;
 
-export const hlambdaREADMETemplate = `# Hlambda
+export const hlambdaREADMETemplate = `# Hlambda (Hyper Lambda)
 
-This is your folder containing all the metadata needed for the app to run in Hlambda server.
+This is your folder containing all the metadata needed for the app to run in the Hlambda server.
 
-Please read more about on https://hlambda.io
+Please read more about it on https://hlambda.io
 
 `;

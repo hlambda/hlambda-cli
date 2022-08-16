@@ -67,6 +67,11 @@ export const errors = {
     exitCode: 911,
   },
 
+  ERROR_NOT_ALLOWED_METHOD_TYPE: {
+    message: 'Not allowed method type, only supported method types are: get|post|put|delete|all',
+    exitCode: 9,
+  },
+
   // Special errors
   UNKNOWN_ERROR: {
     message: 'Unknown server error.',

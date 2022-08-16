@@ -14,14 +14,6 @@ export const addEnv = async (envName, options, program) => {
     const cwd = path.resolve(process.cwd());
     console.log('Executing in cwd:'.green, `${cwd}`.yellow);
 
-    // Load yaml configuration
-    const configuration = await loadConfigFromYAML(options);
-
-    const endpoint = configuration?.endpoint ?? 'http://localhost:8081';
-    const adminSecret = options?.adminSecret ?? configuration?.admin_secret ?? '';
-
-    // Check if configuration has already the env name
-
     // Create env
     const initEnvFilePath = path.resolve(cwd, options.config, 'environments', envName);
     console.log(`Trying to add new environment ${envName}:`.green, `${initEnvFilePath}`.yellow);

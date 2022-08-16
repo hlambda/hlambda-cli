@@ -12,11 +12,20 @@ import figlet from 'figlet';
 
 // Load the sub-commands
 import { init } from './commands/init.js';
+import { clone } from './commands/clone.js';
+import { status } from './commands/status.js';
 import { config } from './commands/config.js';
 import { save } from './commands/save.js';
 import { requests } from './commands/requests.js';
 import { startConsole } from './commands/console.js';
-import { serverReload, serverClearMetadata, metadataApply, metadataExport, metadataSync } from './commands/metadata.js';
+import {
+  serverReload,
+  serverResetMetadata,
+  serverClearMetadata,
+  metadataApply,
+  metadataExport,
+  metadataSync,
+} from './commands/metadata.js';
 import { checkForNewVersion, checkWhatIsNewInCurrentVersion } from './commands/update.js';
 import {
   serverGetLogs,
@@ -27,6 +36,8 @@ import {
 } from './commands/server.js';
 import addEnv from './commands/environment/add.js';
 import deleteEnv from './commands/environment/delete.js';
+import defaultEnv from './commands/environment/default.js';
+import createNewSnippetCodeFile from './commands/snippet/newCodeFile.js';
 import dockerSnippet from './commands/snippet/docker.js';
 import dockerComposeSnippet from './commands/snippet/docker-compose.js';
 import portainerInstallSnippet from './commands/snippet/portainer.js';
@@ -93,13 +104,73 @@ const initProgram = program
   .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
   .action(init);
 
+// --- Initialization sub-program ---
+const cloneProgram = program
+  .command('clone')
+  .alias('c')
+  .description('Clone configuration and metadata from the existing hlambda server.')
+  .argument('<folder_name>', 'Folder name.')
+  .argument('<url>', 'Hlambda server location.')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
+  .option('-c, --clean', "Don't include demo app in initial metadata.")
+  .option('-f, --force', 'Force re-init, it will write over the existing files.')
+  .option('-f, --force-remove', 'Clean up all the files from the directory. (!!!SUPER DANGEROUS!!!)')
+  .action(clone);
+
+// --- Initialization sub-program ---
+const statusProgram = program
+  .command('status')
+  .alias('st')
+  .description('Get status of the Hlambda CLI in the current working directory.')
+  .option('-e, --env <env_name>', 'Select environment.', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-u, --unsafe', 'Do not mask admin secret, output without masking secrets.', '')
+  .action(status);
+
 // --- Snippet sub-program ---
 // Idea is to have quick snippets in CLI
 const snippetProgram = program
   .command('snippets')
+  .alias('sn')
   .alias('snip')
   .alias('snippet')
   .description('Output default or create new snippets.');
+
+const javascriptRouter = snippetProgram
+  .command('javascript-router')
+  .alias('jsr')
+  .alias('r')
+  .argument('<name>', 'Snippet name. Example: `demo` will create file `router.demo.js` ')
+  .option('-p, --path <router_path>', 'Router path', '')
+  .option('-t, --type <get|post|put|delete|all>', 'Router type', 'get')
+  .option('-f, --force', 'Force file creation, it will write over the existing files.')
+  .description('Creates new JS router template')
+  .action(createNewSnippetCodeFile('jsr'));
+
+const javascriptEntrypoint = snippetProgram
+  .command('javascript-entrypoint')
+  .alias('jse')
+  .alias('e')
+  .argument('<name>', 'Snippet name. Example: `demo` will create file `entrypoint.demo.js` ')
+  .option('-f, --force', 'Force file creation, it will write over the existing files.')
+  .description('Creates new JS router template')
+  .action(createNewSnippetCodeFile('jse'));
+
+// Maybe support in the future.
+// const typescriptRouter = snippetProgram
+//   .command('typescript-router')
+//   .alias('tsr')
+//   .argument('<name>', 'Snippet name. Example: `demo` will create file `router.demo.ts` ')
+//   .description('Creates new TS router template')
+//   .action(createNewSnippetCodeFile('tsr'));
+
+// const typescriptEntrypoint = snippetProgram
+//   .command('typescript-entrypoint')
+//   .alias('tse')
+//   .argument('<name>', 'Snippet name. Example: `demo` will create file `entry.demo.ts` ')
+//   .description('Creates new TS router template')
+//   .action(createNewSnippetCodeFile('tse'));
 
 const dockerSnippetProgram = snippetProgram
   .command('docker')
@@ -158,6 +229,14 @@ const envDeleteProgram = environmentsProgram
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .action(deleteEnv);
 
+const envSetDefaultEnvironment = environmentsProgram
+  .command('default')
+  .alias('def')
+  .argument('<env_name>', 'Environment name.')
+  .description('Sets existing environment as default, this can also be done manually by updating .env file.')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .action(defaultEnv);
+
 // --- Update sub-program ---
 const checkForNewVersionProgram = program
   .command('update')
@@ -214,7 +293,7 @@ const metadata = program
   .command('metadata')
   .alias('meta')
   .alias('m')
-  .description('Apply / Export / Clear / Reload metadata, your code and configurations.');
+  .description('Apply / Export / Clear / Reload / Reset metadata, your code and configurations.');
 
 metadata
   .command('reload')
@@ -224,6 +303,15 @@ metadata
   .option('-c, --config <path>', 'Path to config.yaml file.', '')
   .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
   .action(serverReload);
+
+metadata
+  .command('reset')
+  .alias('res')
+  .description('Reset existing metadata on the server. (Warning: Similar to clear!)')
+  .option('-e, --env <env_name>', 'Select environment.', '')
+  .option('-c, --config <path>', 'Path to config.yaml file.', '')
+  .option('-s, --admin-secret <secret>', 'Admin secret used for auth.')
+  .action(serverResetMetadata);
 
 metadata
   .command('clear')

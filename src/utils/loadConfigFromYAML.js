@@ -67,6 +67,15 @@ export const loadConfigFromYAML = async (options) => {
     throw Error(errors.ERROR_CONFIGURATION_FILE_IS_MISSING);
   }
 
+  // Use default if set and if options are not set. Options have priority
+  if ((typeof options.env === 'undefined' || options.env === '') && process.env?.ENV_DEFAULT_ENVIRONMENT) {
+    console.log(
+      `ENV_DEFAULT_ENVIRONMENT is set, and --env flag is not passed, using it to default to env: ${process.env?.ENV_DEFAULT_ENVIRONMENT}`
+    );
+    // eslint-disable-next-line no-param-reassign
+    options.env = process.env?.ENV_DEFAULT_ENVIRONMENT;
+  }
+
   // Check for ENV
   if (!(typeof options.env === 'undefined' || options.env === '')) {
     const configurationEnvFilePath = path.resolve(cwd, options.config, 'environments', options.env, 'config.yaml');
